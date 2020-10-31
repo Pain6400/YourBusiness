@@ -1,12 +1,10 @@
 import React  from "react";
 import { View, Text } from "react-native";
+import Login from "./Login";
 
-function UserGuest(){    
-    return(
-        <View>
-            <Text>UserGuest</Text>
-        </View>
-    )
+function UserGuest(props){    
+    const { navigation } = props; 
+    return <Login navigation={navigation} />
 }
 
 export default UserGuest;

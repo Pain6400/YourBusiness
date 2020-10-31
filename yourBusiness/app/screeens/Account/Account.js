@@ -1,22 +1,21 @@
 import React, { useState, useEffect }  from "react";
-import { View, Text } from "react-native";
 import * as firebase from "firebase";
 import UserLogger from "./UserLogger";
 import UserGuest from "./UserGuest";
+import Loading from "../../Components/Loading"; 
 
-function Account(){
+export default function Account(props) {
+    const { navigation } = props; 
     const [login, setLogin] = useState(null);
     
     useEffect(() => {
        firebase.auth().onAuthStateChanged((user) => {
            !user ? setLogin(false) : setLogin(true)
-           console.log(user)
        })
     }, []);
 
-    if(login === null) return <Text>Cargando...</Text>
 
-    return login ? <UserLogger /> : <UserGuest />
+    if(login === null) return <Loading isVisible={true} text="Cargando..." />
+
+    return login ? <UserLogger /> : <UserGuest navigation={navigation} />
 }
-
-export default Account;
