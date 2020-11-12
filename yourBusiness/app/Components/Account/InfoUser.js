@@ -11,9 +11,12 @@ export default function InfoUser(props){
             { 
                 email, 
                 photoURL, 
-                displayName
+                displayName,
+                uid
             },
-        toastRef
+        toastRef,
+        setLoading,
+        setLoadingText
         } = props;
 
     const changeAvatar = async () => {
@@ -27,10 +30,41 @@ export default function InfoUser(props){
                 aspect: [4,3],
             })
 
-            console.log(result)
+            if(result.cancelled) {
+                toastRef.current.show("Has cerrado la selecion de imagenes");
+            } else {
+                uploadImage(result.uri).then(() => {
+                    updatePhotoUrl();
+                }).catch(() => {
+                    toastRef.current.show("Error al actualizar el avatar");
+                })
+            }
         }
     }
 
+    const uploadImage = async (uri) => {
+        setLoadingText("Actualizando avatar");
+        setLoading(true);
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const mountainsRef = await firebase.storage().ref().child(`avatar/image${uid}`);
+        return mountainsRef.put(blob);
+    }
+
+    const updatePhotoUrl = () => {
+        firebase
+            .storage()
+            .ref(`avatar/image${uid}`)
+            .getDownloadURL()
+            .then(async (response) => {
+                const update = {
+                    photoURL: response
+                }
+
+                await firebase.auth().currentUser.updateProfile(update);
+                setLoading(false);
+            })
+    }
     return (
         <View style={styles.viewUserInfo}>
             <Avatar 
