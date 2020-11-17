@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Input, Button } from "react-native-elements";
 import * as firebase from "firebase";
 export default function ChangeNameForm(props) {
@@ -30,6 +30,7 @@ export default function ChangeNameForm(props) {
                 .then(() => {
                     setIsLoading(false);
                     setReloadUserInfo(true);
+                    toastRef.current.show("Nombre actualizado correctamente")
                     setShowModal(false);
                 }).catch((erro) => {
                     setIsLoading(false);
