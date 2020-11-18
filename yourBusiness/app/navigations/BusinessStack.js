@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Business from "../screeens/Business";
+import Business from "../screeens/Business//Business";
 
 const Stack = createStackNavigator();
 

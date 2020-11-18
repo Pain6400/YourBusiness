@@ -27,13 +27,12 @@ export default function ChangePasswordForm(props) {
             setErrors({ errorRepeatPass: "La contraseña no puede ser vacia" });           
         } else if (newPassword !== repeatPassword) {
             setErrors({ errorRepeatPass : "Las contraseñas deben ser iguales" }); 
-        } else if(size(newpassword) < 6){   
+        } else if(size(newPassword) < 6){   
             setErrors({ errorNewPass : "Las contraseñas debe ser mayor de 6 caracteres" })
         }
         else {            
             setIsLoading(true);
-
-            reauthenticate(password).then(() => {
+            reauthenticate(password).then((response) => {
                 firebase
                 .auth()
                 .currentUser
@@ -49,7 +48,7 @@ export default function ChangePasswordForm(props) {
                 })
             }).catch(() => {
                 setIsLoading(false);
-                setErrors({ password : "La contraseña es incorrecta" });
+                setErrors({ errorPass : "La contraseña no es incorrecta" });
             })
         }
     }

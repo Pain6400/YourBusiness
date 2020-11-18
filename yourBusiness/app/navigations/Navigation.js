@@ -31,7 +31,7 @@ export default function Navigation() {
         <Tab.Screen 
             name="business" 
             component={BusinessStack}
-            options={{ title: "Negocions"}}
+            options={{ title: "Negocios"}}
         />
         <Tab.Screen 
             name="favorites" 
