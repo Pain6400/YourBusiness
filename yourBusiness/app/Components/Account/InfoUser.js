@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { Avatar, Accessory, Image } from "react-native-elements";
+import { Avatar, Accessory } from "react-native-elements";
 import * as firebase from "firebase";
 import * as Permissions from "expo-permissions"
 import * as ImagePicker from "expo-image-picker"

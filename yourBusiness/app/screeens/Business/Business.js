@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { ListItem, Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements'
+import * as firebase from "firebase"
 
-export default function Business(){    
+export default function Business(props){    
+    const [user, setUser] = useState(null);
+    const { navigation } = props;
+    useEffect(() => {
+        firebase.auth().onAuthStateChanged((userInfo) => {
+            setUser(userInfo);
+        })
+    }, [])
+
     return(
         <View style={styles.viewBody}>
-            <Text>La amo Tania Gisela Morales Avila</Text>
-            <Text>By: Kevin Mejia</Text>
 
-            <Icon 
-                reverse
-                type="material-community"
-                name="plus"
-                color="#00a680"
-                containerStyle={styles.btnContainer}
-            />
+            {user && (
+                <Icon
+                    reverse
+                    type="material-community"
+                    name="plus"
+                    color="#00a680"
+                    containerStyle={styles.btnContainer}
+                    onPress={() => navigation.navigate("add-business")}
+                />
+            )}
         </View>
     )
 }
