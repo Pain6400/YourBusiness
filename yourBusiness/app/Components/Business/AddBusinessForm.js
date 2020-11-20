@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, View, ScrollView, Alert, Dimensions } from "react-native";
-import { Icon, Avatar, Input, Button } from "react-native-elements";
+import { StyleSheet, View, ScrollView, Image, Dimensions } from "react-native";
+import { Input, Button } from "react-native-elements";
 import UploadImages from "../../Components/UploadImages";
+
+const widthScreen = Dimensions.get("window").width;
 
 export default function AddRestaurantForm(props) {
 
@@ -18,6 +20,8 @@ export default function AddRestaurantForm(props) {
 
     return (
         <ScrollView style={styles.scrollView}>
+
+            <ImageBusiness imageBusiness={imagesSelected[0]} />
             <FormAdd 
                 setBusinessName={setBusinessName}
                 setBusinessAddress={setBusinessAddress}
@@ -64,6 +68,20 @@ function FormAdd(props) {
     )
 }
 
+function ImageBusiness(props) {
+    const { imageBusiness } = props;
+    return (
+        <View style={styles.viewPhote}>
+            <Image  
+                source={ imageBusiness 
+                    ? { uri: imageBusiness } 
+                    : require("../../../assets/Images/no-image.png")
+                }
+                style={{ width: widthScreen, height: 200 }}
+            />
+        </View>
+    )
+}
 
 const styles = StyleSheet.create({
     scrollView: {
@@ -105,5 +123,10 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         marginRight: 10
+    },
+    viewPhote: {
+        alignItems: "center",
+        height: 200,
+        marginBottom: 20
     }
 });
