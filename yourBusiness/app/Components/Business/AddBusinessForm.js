@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, ScrollView, Image, Dimensions } from "react-native";
 import { Input, Button } from "react-native-elements";
 import UploadImages from "../../Components/UploadImages";
-
+import GoogleMap from "../GoogleMap";
 const widthScreen = Dimensions.get("window").width;
 
 export default function AddRestaurantForm(props) {
@@ -12,7 +12,8 @@ export default function AddRestaurantForm(props) {
     const [businessAddress, setBusinessAddress] = useState("");
     const [businessDescription, setBusinessDescription] = useState("");
     const [imagesSelected, setImageSelected] = useState([]);
-    
+    const [isVisibleMap, setIsVisibleMap] = useState(false);
+
     const addBusiness = () => {
         console.log(imagesSelected)
 
@@ -26,6 +27,7 @@ export default function AddRestaurantForm(props) {
                 setBusinessName={setBusinessName}
                 setBusinessAddress={setBusinessAddress}
                 setBusinessDescription={setBusinessDescription}
+                setIsVisibleMap={setIsVisibleMap}
             />
 
             <UploadImages
@@ -38,13 +40,18 @@ export default function AddRestaurantForm(props) {
                 onPress={addBusiness}
                 buttonStyle={styles.btn}
             />
+
+            <GoogleMap 
+                isVisibleMap={isVisibleMap} 
+                setIsVisibleMap={setIsVisibleMap}
+            />
         </ScrollView>
     )
 }
 
 function FormAdd(props) {
 
-    const { setBusinessName, setBusinessAddress, setBusinessDescription } = props;
+    const { setBusinessName, setBusinessAddress, setBusinessDescription, setIsVisibleMap } = props;
 
     return (
         <View style={styles.viewForm}>
@@ -57,6 +64,12 @@ function FormAdd(props) {
                 placeholder="Direccion"
                 containerStyle={styles.input}
                 onChange={e => setBusinessAddress(e.nativeEvent.text)}
+                rightIcon={{
+                    type: "material-community",
+                    name: "google-maps",
+                    color: "#c2c2c2",
+                    onPress: () => setIsVisibleMap(true)
+                }}
             />
             <Input 
                 placeholder="Descripcion"
