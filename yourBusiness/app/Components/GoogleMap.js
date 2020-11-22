@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+import { Button } from "react-native-elements";
 import Modal from "./Modal";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import MapView from "react-native-maps";
 
 export default function GoogleMap(props) {
-    const { isVisibleMap, setIsVisibleMap, toastRef } = props;
+    const { isVisibleMap, setIsVisibleMap, toastRef, setLocationBusiness } = props;
     const [location, setLocation] = useState(null);
+
 
     useEffect(() => {
         (async () => {
@@ -27,6 +29,13 @@ export default function GoogleMap(props) {
         })()
 
     }, [])
+    
+    const saveCoordinate = () => {
+        setLocationBusiness(location);
+        toastRef.current.show("Localizacion guardada correctamente", 3000);
+        setIsVisibleMap(false);
+    };
+    
     return (
         <Modal isVisible={isVisibleMap} setIsVisible={setIsVisibleMap}>
             <View>
@@ -46,6 +55,20 @@ export default function GoogleMap(props) {
                         />
                     </MapView>
                 )}
+                <View style={styles.viewMapBtn}>
+                    <Button 
+                        title="Guardar"
+                        containerStyle={styles.btnSave}
+                        buttonStyle={styles.btnSaveStyle}
+                        onPress={saveCoordinate}
+                    />
+                    <Button 
+                        title="Cancelar"
+                        containerStyle={styles.btnCancel}
+                        buttonStyle={styles.btnCancelStyle}
+                        onPress={() => setIsVisibleMap(false)}
+                    />
+                </View>
             </View>
         </Modal>
     )
@@ -55,5 +78,22 @@ const styles = StyleSheet.create({
     mapStyle: {
         width: "100%",
         height: 550
+    },
+    viewMapBtn: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 10
+    },
+    btnSave: {
+        paddingRight: 5
+    },
+    btnSaveStyle: {
+        backgroundColor: "#00a680"
+    },
+    btnCancel: {
+        paddingLeft: 5
+    },
+    btnCancelStyle: {
+        backgroundColor: "#a60d0d"
     }
 })
