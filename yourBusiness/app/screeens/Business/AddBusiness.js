@@ -13,11 +13,11 @@ export default function AddBusiness (props) {
         <View>
             <AddBusinessForm
                 toastRef={toastRef}
-                isLoading={isLoading}
+                setIsLoading={setIsLoading}
                 navigation={navigation}
             />
             <Toast ref={toastRef} position="center" opacity={0.9} />
-            <Loading isVisible={isLoading} text="Cargando negocios" />
+            <Loading isVisible={isLoading} text="Creando E-comerce" />
         </View>
     )
 }
