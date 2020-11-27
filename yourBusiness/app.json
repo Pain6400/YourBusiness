@@ -23,6 +23,12 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
+      "package": "com.KevinMejia.yourBusiness",
+          "config": {
+      "googleMaps": {
+        "apiKey": "AIzaSyCp-BUoX8B8699rkbnb2P2CK4gXSeesVcc"
+      }
+    },
       "permissions": [
         "CAMERA_ROLL",
         "READ_EXTERNAL_STORAGE",

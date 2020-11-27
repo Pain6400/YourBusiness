@@ -41,7 +41,6 @@ export default function AddRestaurantForm(props) {
     const [Category, setCategory] = useState(0);
 
     const addBusiness = () => {
-        console.log(timeOpen)
         if(
             !businessName || 
             !businessAddress || 
@@ -82,6 +81,7 @@ export default function AddRestaurantForm(props) {
                         timeClose: timeClose,
                         categoryId: Category,
                         images: response,
+                        products: [],
                         rating: 0,
                         ratingTotal: 0,
                         quantityVoting: 0,
