@@ -15,7 +15,7 @@ export default function MyEcommerce(props) {
     const [totalBusiness, setTotalBusiness] = useState(0);
     const [startBusiness, setStartBusiness] = useState(null);
     const [loading, setIsLoading] = useState(false);
-    const [userId, setUserId] = useState("");
+    const [userId, setUserId] = useState(null);
 
     const { navigation } = props;
     useEffect(() => {      
@@ -51,7 +51,7 @@ export default function MyEcommerce(props) {
                     setMyBusiness(resultBusiness);
                 })
     
-        }, [user])
+        }, [userId])
     );
 
     const loadNextBusiness = () => {
@@ -84,7 +84,7 @@ export default function MyEcommerce(props) {
 
     return (
         <View style={styles.viewBody}>
-            {user && (
+            {userId && (
                 <ListMyEcommerce
                     business={mybusiness}
                     loadNextBusiness={loadNextBusiness}
