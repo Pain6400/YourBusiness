@@ -65,7 +65,7 @@ export default function AddRestaurantForm(props) {
 
                 db.collection("Ecommerce")
                     .add({
-                        User: firebase.auth().currentUser.uid,
+                        userId: firebase.auth().currentUser.uid,
                         name: businessName,
                         address: businessAddress,
                         desciption: businessDescription,
@@ -88,7 +88,7 @@ export default function AddRestaurantForm(props) {
                         createAt: new Date(),
                     }).then(() => {
                         setIsLoading(false);
-                        navigation.navigate("business");
+                        navigation.navigate("myEcommerce");
                     }).catch(() => {
                         setIsLoading(false);
                         toastRef.current.show("Error al crear tienda", 3000)

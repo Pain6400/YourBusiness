@@ -5,10 +5,11 @@ import Loading from "../../Components/Loading";
 import AddBusinessForm from "../../Components/Business/AddBusinessForm";
 
 export default function AddBusiness (props) {
+
     const { navigation } = props;
     const [isLoading, setIsLoading] = useState(false);
     const toastRef = useRef();
-
+    
     return (
         <View>
             <AddBusinessForm

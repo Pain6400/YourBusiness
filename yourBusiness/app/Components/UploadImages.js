@@ -3,7 +3,7 @@ import { StyleSheet, View, Alert } from "react-native";
 import { Icon, Avatar } from "react-native-elements";
 import * as Permissions from "expo-permissions";
 import * as ImagesPicker from "expo-image-picker";
-import { map, size, filter, functionsIn } from "lodash"
+import { map, size, filter } from "lodash"
 
 export default function UploadImage(props) {
 

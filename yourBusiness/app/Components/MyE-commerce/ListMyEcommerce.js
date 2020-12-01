@@ -55,8 +55,10 @@ function BusinessRender(props) {
     const { images, name, address, desciption, id } = item.item;
     const imageItem = images[0];
   const ecommerceInfo = () => {
-
-    console.log(id)
+        navigation.navigate("myEcommerceDetail", {
+            id,
+            name
+        })
     // var ecommerce = db.collection("Ecommerce").doc(id);
 
     // // Set the "capital" field of the city 'DC'

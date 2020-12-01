@@ -24,11 +24,11 @@
     },
     "android": {
       "package": "com.KevinMejia.yourBusiness",
-          "config": {
-      "googleMaps": {
-        "apiKey": "AIzaSyCp-BUoX8B8699rkbnb2P2CK4gXSeesVcc"
-      }
-    },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBy-SS8KfsdWqRsGTx6-cjQNKGGp1pKgTs"
+        }
+      },
       "permissions": [
         "CAMERA_ROLL",
         "READ_EXTERNAL_STORAGE",

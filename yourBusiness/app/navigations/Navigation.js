@@ -10,7 +10,7 @@ import FavoritesStack from "./FavoritesStack";
 import TopBusinessStack from "./TopBusinessStack";
 import SearchStack from "./SearchStack";
 import AccountStack from "./AccountStack";
-
+import MyEcommerceStack from "./MyEcommerceStack";
 //------Stacks------//
 
 const Tab = createBottomTabNavigator();
@@ -31,12 +31,12 @@ export default function Navigation() {
         <Tab.Screen 
             name="business" 
             component={BusinessStack}
-            options={{ title: "Negocios"}}
+            options={{ title: "Tiendas"}}
         />
         <Tab.Screen 
-            name="favorites" 
-            component={FavoritesStack} 
-            options={{ title: "Favoritos"}}
+            name="myEcommerce" 
+            component={MyEcommerceStack} 
+            options={{ title: "Mi E-commer"}}
         />
         <Tab.Screen 
             name="top-business" 
@@ -63,10 +63,10 @@ function screenOptions(route, color) {
 
     switch (route.name) {
         case "business":
-                iconName = "store"
+                iconName = "cart"
             break;
-        case "favorites":
-                iconName = "heart-outline"
+        case "myEcommerce":
+                iconName = "store"
             break;
         case "top-business":
             iconName = "star-outline"
