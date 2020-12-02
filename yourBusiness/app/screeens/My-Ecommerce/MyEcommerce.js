@@ -27,7 +27,6 @@ export default function MyEcommerce(props) {
 
     useFocusEffect(
         React.useCallback(() => {
-            
             db.collection("Ecommerce").where("userId", "==", userId).get().then((snap) => {
                 setTotalBusiness(snap.size)
             })
@@ -50,7 +49,6 @@ export default function MyEcommerce(props) {
     
                     setMyBusiness(resultBusiness);
                 })
-    
         }, [userId])
     );
 

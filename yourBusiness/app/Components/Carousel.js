@@ -6,7 +6,7 @@ export default function CarouselImages(props) {
     const { arrayImages, height, width } = props;
 
     const renderItem = ({ item }) => {
-        return <Image style={{ width, height }} source={{ uri: item}} />
+        return <Image style={{ width, height }} source={{ uri: item }} />
     }
 
     return (
@@ -14,7 +14,7 @@ export default function CarouselImages(props) {
             layout={"default"}
             data={arrayImages}
             sliderWidth={width}
-            itemWidth={height}
+            itemWidth={width}
             renderItem={renderItem}
         />
     )
