@@ -6,12 +6,12 @@ export default function MapEcommerceDetail(props) {
     const { location, name, height } = props;
     
     const openAppMap = () => {
-        openMap({
+        openMap({ 
             latitude: location.latitude,
-            longitude: location.longitude,
-            Zoom: 19,
-            query: name
-        })
+            longitude: location.latitude,
+            title: name,
+            zoom: 19
+        });
     }
     return (
         <MapView
