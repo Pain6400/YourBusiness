@@ -18,7 +18,6 @@ export default function MyEcommerceDetail(props) {
     const [ecommerce, setEcommerce] = useState(null);
     const [rating, setRating] = useState(0);
 
-    console.log(ecommerce)
     useEffect(() => {   
         db.collection("Ecommerce")
             .doc(id)
@@ -53,6 +52,14 @@ export default function MyEcommerceDetail(props) {
                 address={ecommerce.address}
                 phone={ecommerce.phone}
                 email={ecommerce.email}
+                timeOpen={ecommerce.timeOpen}
+                timeClose={ecommerce.timeClose}
+                webPage={ecommerce.webPage}
+                linkFcebook={ecommerce.linkFcebook}
+                linkWhatsapp={ecommerce.linkWhatsapp}
+                navigation={navigation}
+                id={ecommerce.id}
+                userId={ecommerce.userId}
             />
         </ScrollView>
     )

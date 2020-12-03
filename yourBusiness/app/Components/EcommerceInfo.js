@@ -1,11 +1,26 @@
 import React from "react"
 import { View, Text, StyleSheet } from "react-native";
 import MapEcommerceDetail from "./MapEcommerceDetail";
-import { ListItem, Avatar } from 'react-native-elements'
+import { ListItem, Button } from 'react-native-elements'
 
 import { map } from "lodash"
 export default function EcommerceInfo(props) {
-    const { location, name, address, phone, email } = props;
+    const { 
+            location, 
+            name, 
+            address, 
+            phone, 
+            email, 
+            timeOpen, 
+            timeClose,
+            webPage,
+            linkWhatsapp,
+            linkFcebook,
+            navigation,
+            id,
+            userId
+        } = props;
+
     const listInfo =  [
         {
             text: address,
@@ -22,6 +37,30 @@ export default function EcommerceInfo(props) {
         {
             text: email,
             iconName: "at",
+            iconType: "material-community",
+            action: null
+        },
+        {
+            text: `De ${timeOpen} a ${timeClose}`,
+            iconName: "clock-outline",
+            iconType: "material-community",
+            action: null
+        },
+        {
+            text: webPage,
+            iconName: "web",
+            iconType: "material-community",
+            action: null
+        },
+        {
+            text: linkFcebook,
+            iconName: "facebook",
+            iconType: "material-community",
+            action: null
+        },
+        {
+            text: linkWhatsapp,
+            iconName: "whatsapp",
             iconType: "material-community",
             action: null
         }
@@ -50,6 +89,13 @@ export default function EcommerceInfo(props) {
                     containerStyle={styles.containerListItem}
                 />
             ))}
+
+            <Button 
+                title="PRODUCTOS"
+                containerStyle={styles.btnContainerAddProduct}
+                buttonStyle={styles.btnAddPrduct}
+                onPress={() => navigation.navigate("EcommerceProducts", { id: id, userId: userId }) }
+            />
         </View>
     )
 }
@@ -67,5 +113,12 @@ const styles = StyleSheet.create({
     containerListItem: {
         borderBottomColor: "#d8d8d8",
         borderBottomWidth: 1 
-    }
+    },
+    btnContainerAddProduct: {
+        marginTop: 20,
+        width: "95%"
+    },
+    btnAddPrduct:{
+        backgroundColor: "#00a680"
+    },
 })

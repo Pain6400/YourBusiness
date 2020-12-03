@@ -4,7 +4,6 @@ import { Rating } from 'react-native-elements';
 
 export default function TitleEcommerce(props) {
     const { name, description, rating } = props;
-
     return (
         <View style={styles.ecommerceTitle}>
             <View style={{ flexDirection: "row" }}>

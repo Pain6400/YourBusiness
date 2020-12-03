@@ -3,7 +3,13 @@ import Navigation from "./app/navigations/Navigation";
 import { firebaseApp } from "./app/Utils/firebase";
 import { LogBox } from "react-native";
 
-LogBox.ignoreLogs(["Setting a timer", "Animated:"]);
+LogBox.ignoreLogs([
+  "Setting a timer",
+  "Animated:", 
+  "'ListItem.leftIcon'", 
+  "'ListItem.title'",
+  "Warning: Cannot update a component from inside the function body of a different component."
+]);
 LogBox.ignoreAllLogs();
 
 export default function App() {
