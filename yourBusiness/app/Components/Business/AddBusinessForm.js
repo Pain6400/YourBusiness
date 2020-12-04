@@ -295,7 +295,7 @@ function FormAdd(props) {
     return (
         <View style={styles.viewForm}>
             <Input 
-                placeholder="Nombre del restaurante"
+                placeholder="Nombre de la tienda"
                 containerStyle={styles.input}
                 onChange={e => setBusinessName(e.nativeEvent.text) }
             />

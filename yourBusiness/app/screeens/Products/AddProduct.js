@@ -5,7 +5,8 @@ import Loading from "../../Components/Loading";
 import AddProductForm from "../../Components/Product/AddProductForm";
 
 export default function AddProduct(props) {
-    const { navigation, id, userId } = props;
+    const { navigation } = props;
+    const { id, userId } = props.route.params;;
     const [isLoading, setIsLoading] = useState(false);
     const toastRef = useRef();
 
@@ -19,7 +20,7 @@ export default function AddProduct(props) {
                 userId={userId}
             />
             <Toast ref={toastRef} position="center" opacity={0.9} />
-            <Loading isVisible={isLoading} text="Creando E-comerce" />
+            <Loading isVisible={isLoading} text="Creando producto" />
         </View>
     )
 }
