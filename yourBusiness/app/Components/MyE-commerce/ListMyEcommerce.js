@@ -52,7 +52,7 @@ function BusinessFooterList(props) {
 
 function BusinessRender(props) {
     const { item, navigation } = props;
-    const { images, name, address, desciption, id } = item.item;
+    const { images, name, address, description, id } = item.item;
     const imageItem = images[0];
   const ecommerceInfo = () => {
         navigation.navigate("myEcommerceDetail", {
@@ -94,7 +94,7 @@ function BusinessRender(props) {
            <View>
                 <Text style={styles.businessName}>{name}</Text>
                 <Text style={styles.businessAddress}>{address}</Text>
-                <Text style={styles.businessDescription}>{desciption.substr(0, 60)}...</Text>
+                <Text style={styles.businessDescription}>{description.substr(0, 60)}...</Text>
            </View>
          </View>
       </TouchableOpacity>

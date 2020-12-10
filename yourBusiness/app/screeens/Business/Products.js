@@ -13,7 +13,7 @@ const db = firebase.firestore(firebaseApp);
 
 const widthScreen = Dimensions.get("window").width;
 
-export default function EcommerceProducts(props) {
+export default function Products(props) {
     const { navigation } = props;
     const { id, userId } = props.route.params;
     const [products, setProducts] = useState([]);
@@ -47,14 +47,6 @@ export default function EcommerceProducts(props) {
             ))}
           </View>
         </ScrollView>
-            <Icon
-                reverse
-                type="material-community"
-                name="plus"
-                color="#00a680"
-                containerStyle={styles.btnContainer}
-                onPress={() => navigation.navigate("AddProduct", { id, userId })}
-            />
         </View>
     )
 }
