@@ -5,6 +5,7 @@ import AddBusiness from "../screeens/Business/AddBusiness";
 import MyEcommerceDetail from "../screeens/My-Ecommerce/MyEcommerceDetail";
 import EcommerceProducts from "../screeens/Products/EcommerceProducts";
 import AddProduct from "../screeens/Products/AddProduct";
+import EditProduct from "../screeens/Products/EditProduct";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ export default function BusinessStack() {
                 name="AddProduct"
                 component={AddProduct}
                 options={{ title: "Agregar producto" }}
+            />
+            <Stack.Screen
+                name="editProduct"
+                component={EditProduct}
+                options={{ title: "Editar producto" }}
             />
         </Stack.Navigator>
     );

@@ -65,6 +65,8 @@ function Product(props) {
             style={styles.image}
             source={{ uri: images[0] }}
           />
+          <Text style={styles.text}>{productName}</Text>
+          <Text style={styles.text}>L.{productPrice}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -92,6 +94,7 @@ const styles = StyleSheet.create({
         width: widthScreen / 2,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 30
       },
       image: {
         width: '100%',
@@ -101,5 +104,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-      }
+      },
+      text: {
+        paddingTop: 2,
+        color: "grey",
+      },
 });

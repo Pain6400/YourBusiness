@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableWithoutFeedback, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
 import { Icon } from "react-native-elements";
 import { size, map } from "lodash";
 
@@ -17,6 +17,7 @@ export default function EcommerceProducts(props) {
     const { navigation } = props;
     const { id, userId } = props.route.params;
     const [products, setProducts] = useState([]);
+
     useEffect(() => {      
         const products = [];
 
@@ -27,7 +28,7 @@ export default function EcommerceProducts(props) {
         .then((response) => {
             response.forEach((docs) => {
                 const product = docs.data();
-                products.productId = docs.id;
+                product.productId = docs.id;
                 products.push(product);
             });
             setProducts(products);
@@ -60,21 +61,21 @@ export default function EcommerceProducts(props) {
 }
 
 function Product(props) {
-    const {item, navigation} = props;
-    const { images, productName } = item;
-    // const goMovie = () => {
-    //   navigation.navigate('movie', {id});
-    // };
-
+    const { item, navigation} = props;
+    const { images, productName, productPrice } = item;
     return (
-      <TouchableWithoutFeedback>
-        <View style={styles.movie}>
+      <TouchableOpacity
+          onPress={() => navigation.navigate("editProduct", { item: JSON.stringify(item) }) }
+      >
+        <View style={styles.product}>
           <Image
             style={styles.image}
             source={{ uri: images[0] }}
           />
+          <Text style={styles.text}>{productName}</Text>
+          <Text style={styles.text}>L.{productPrice}</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 
@@ -95,11 +96,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
-    movie: {
+    product: {
         height: widthScreen / 2,
         width: widthScreen / 2,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 30
       },
       image: {
         width: '100%',
@@ -109,5 +111,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
-      }
+      },
+      text: {
+        paddingTop: 2,
+        color: "grey",
+   },
 });
