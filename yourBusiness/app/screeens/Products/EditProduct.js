@@ -11,16 +11,17 @@ export default function EditProduct(props) {
     const toastRef = useRef();
 
     const product = JSON.parse(item);
-    console.log(product)
+
     return (
         <View>
             <EditProductForm
                 toastRef={toastRef}
                 setIsLoading={setIsLoading}
                 navigation={navigation}
+                item={product}
             />
             <Toast ref={toastRef} position="center" opacity={0.9} />
-            <Loading isVisible={isLoading} text="Creando producto" />
+            <Loading isVisible={isLoading} text="Editando producto" />
         </View>
     )
 }

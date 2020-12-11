@@ -2,7 +2,6 @@ import { map, size } from "lodash";
 import React, { useState } from "react";
 import { StyleSheet, View, ScrollView, Image, Dimensions } from "react-native";
 import { Button } from "react-native-elements";
-import RNPickerSelect from 'react-native-picker-select';
 import uuid from "random-uuid-v4";
 
 import UploadImages from "../../Components/UploadImages";

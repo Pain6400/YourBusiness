@@ -9,6 +9,8 @@ import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 
+import { useFocusEffect } from '@react-navigation/native';
+
 const db = firebase.firestore(firebaseApp); 
 
 const widthScreen = Dimensions.get("window").width;
@@ -18,7 +20,8 @@ export default function EcommerceProducts(props) {
     const { id, userId } = props.route.params;
     const [products, setProducts] = useState([]);
 
-    useEffect(() => {      
+    useFocusEffect(
+      React.useCallback(() => {
         const products = [];
 
         db.collection("Product")
@@ -32,8 +35,9 @@ export default function EcommerceProducts(props) {
                 products.push(product);
             });
             setProducts(products);
-        })
-    }, [])
+        });
+      }, [])
+    )
 
     return (
         <View style={styles.viewBody}>

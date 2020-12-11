@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableWithoutFeedback, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
 import { Icon } from "react-native-elements";
 import { size, map } from "lodash";
 
@@ -52,24 +52,22 @@ export default function Products(props) {
 }
 
 function Product(props) {
-    const {item, navigation} = props;
-    const { images, productName } = item;
-    // const goMovie = () => {
-    //   navigation.navigate('movie', {id});
-    // };
-
-    return (
-      <TouchableWithoutFeedback>
-        <View style={styles.movie}>
-          <Image
-            style={styles.image}
-            source={{ uri: images[0] }}
-          />
-          <Text style={styles.text}>{productName}</Text>
-          <Text style={styles.text}>L.{productPrice}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
+  const { item, navigation} = props;
+  const { images, productName, productPrice } = item;
+  return (
+    <TouchableOpacity
+        //onPress={() => navigation.navigate("editProduct", { item: JSON.stringify(item) }) }
+    >
+      <View style={styles.product}>
+        <Image
+          style={styles.image}
+          source={{ uri: images[0] }}
+        />
+        <Text style={styles.text}>{productName}</Text>
+        <Text style={styles.text}>L.{productPrice}</Text>
+      </View>
+    </TouchableOpacity>
+  );
   }
 
 const styles = StyleSheet.create({
@@ -89,13 +87,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff"
     },
-    movie: {
-        height: widthScreen / 2,
-        width: widthScreen / 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 30
-      },
+    product: {
+      height: widthScreen / 2,
+      width: widthScreen / 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 30
+    },
       image: {
         width: '100%',
         height: '100%',
