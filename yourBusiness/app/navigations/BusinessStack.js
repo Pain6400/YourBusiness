@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Business from "../screeens/Business/Business";
 import EcommerceDetail from "../screeens/Business/EcommerceDetail";
 import Products from "../screeens/Business/Products";
+import ProductDetail from "../screeens/Business/ProductDetail";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,11 @@ export default function BusinessStack() {
                 name="products"
                 component={Products}
                 options={{ title: "E-commerce"}}
+            />
+            <Stack.Screen
+                name="productDetail"
+                component={ProductDetail}
+                options={{ title: "Detalle"}}
             />
         </Stack.Navigator>
     );

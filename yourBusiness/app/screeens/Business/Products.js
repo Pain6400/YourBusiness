@@ -56,7 +56,7 @@ function Product(props) {
   const { images, productName, productPrice } = item;
   return (
     <TouchableOpacity
-        //onPress={() => navigation.navigate("editProduct", { item: JSON.stringify(item) }) }
+        onPress={() => navigation.navigate("productDetail", { item: JSON.stringify(item) }) }
     >
       <View style={styles.product}>
         <Image
