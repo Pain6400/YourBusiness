@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { Input, Icon, Button } from "react-native-elements";
-import * as firebase from "firebase";
 import { size, isEmpty } from "lodash";
+import {Picker} from '@react-native-picker/picker';
 
 import { validateEmail } from "../../Utils/Validations";
 import Loading from "../../Components/Loading";
+const widthScreen = Dimensions.get("window").width;
+
+import { firebaseApp } from "../../Utils/firebase";
+import firebase from "firebase/app";
+import "firebase/storage";
+import "firebase/firestore";
+
+const db = firebase.firestore(firebaseApp); 
 
 export default function RegisterForm(props){
     const [showPass, setShowPass] = useState(false);
@@ -13,9 +21,19 @@ export default function RegisterForm(props){
     const [formData, setFormData] = useState(defaultFormValues());
     const { toastRef, navigation } = props;
     const [loading, setLoading] = useState(false);
+    const [ userType, setUserType ] = useState(0);
+    const [ userPhone, setUserPhone] = useState(null);
+    const [userName, setUserName] = useState("");
 
     const SaveData = () => {
-        if (isEmpty(formData.email) || isEmpty(formData.password) || isEmpty(formData.repeatPassword)) {
+        if (
+                isEmpty(formData.email) || 
+                isEmpty(formData.password) || 
+                isEmpty(formData.repeatPassword) ||
+                userType === 0 ||
+                isEmpty(userPhone) ||
+                isEmpty(userName) 
+            ) {
             toastRef.current.show("Todos los campos son obligatorios")
         } else if(!validateEmail(formData.email)){         
             toastRef.current.show("El email es invalido")
@@ -29,12 +47,26 @@ export default function RegisterForm(props){
                 .auth()
                 .createUserWithEmailAndPassword(formData.email, formData.password)
                 .then(response => {
-                    setLoading(false);
-                    navigation.navigate("account")
+                    db.collection("User")
+                        .doc(response.user.uid)
+                        .set({
+                            userName: userName,
+                            userPhone: userPhone,
+                            userType: userType
+                        }).then(res => {
+                            setLoading(false);
+                            navigation.navigate("account")
+                        })
+                        .catch(() => {
+                            setLoading(false);
+                            toastRef.current.show("Error")
+                        });
                 }).catch(() => {
                     setLoading(false);
                     toastRef.current.show("Email ya esta en uso")
                 })
+
+            //db.collection
         }
     }
 
@@ -43,6 +75,34 @@ export default function RegisterForm(props){
     }
     return (
         <View style={styles.formContainer}>
+
+            <Input
+                placeholder="Nombre"
+                containerStyle={styles.InputForm}
+                rightIcon={
+                    <Icon
+                        type="material-community"
+                        name="account-alert-outline"
+                        iconStyle={styles.iconRight}
+                    />
+                }
+                onChange={e => setUserName(e.nativeEvent.text)}
+            />
+
+            <Input
+                placeholder="Telefono"
+                containerStyle={styles.InputForm}
+                keyboardType="numeric"
+                rightIcon={
+                    <Icon
+                        type="material-community"
+                        name="cellphone"
+                        iconStyle={styles.iconRight}
+                    />
+                }
+                onChange={e => setUserPhone(e.nativeEvent.text)}
+            />
+
             <Input
                 placeholder="Correo Electronico"
                 containerStyle={styles.InputForm}
@@ -55,6 +115,18 @@ export default function RegisterForm(props){
                 }
                 onChange={e => onChange(e, "email")} 
             />
+
+            <Picker
+                selectedValue={userType}
+                style={{ height: 50, width: "100%", marginTop: 20 }}
+                onValueChange={(itemValue, itemIndex) => setUserType(itemValue)}
+            >
+                <Picker.Item label="--- Selecione el tipo de usuaio" value={0} />
+                <Picker.Item label="Comun" value={1} />
+                <Picker.Item label="Empresa" value={2} />
+            </Picker>
+      
+
             <Input 
                 placeholder="Contraseña"
                 containerStyle={styles.InputForm}
@@ -102,7 +174,7 @@ function defaultFormValues(){
     return {
         email: "",
         password: "",
-        repeatPassword: ""
+        repeatPassword: "",
     }
 }
 
