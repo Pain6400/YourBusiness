@@ -39,9 +39,9 @@ export default function Navigation() {
             options={{ title: "Mi E-commer"}}
         />
         <Tab.Screen 
-            name="top-business" 
+            name="favorite" 
             component={TopBusinessStack}
-            options={{ title: "Top 5"}}
+            options={{ title: "Favorios"}}
          />  
         <Tab.Screen 
             name="search" 
@@ -68,8 +68,8 @@ function screenOptions(route, color) {
         case "myEcommerce":
                 iconName = "store"
             break;
-        case "top-business":
-            iconName = "star-outline"
+        case "favorite":
+            iconName = "heart-outline"
             break;
         case "search":
             iconName = "magnify"
