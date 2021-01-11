@@ -1,12 +1,10 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-function TopBusiness(){
+export default function ShoppingCard(){
     return(
         <View>
-            <Text>TopBusiness</Text>
+            <Text>card</Text>
         </View>
     )
 }
-
-export default TopBusiness;

@@ -1,16 +1,16 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import TopBusiness from "../screeens/TopBusiness";
+import ShoppingCard from "../screeens/ShoppingCard/ShoppingCard";
 
 const Stack = createStackNavigator();
 
-export default function TopBusinessStack() {
+export default function ShoppingCardStack() {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name="top-Business"
-                component={TopBusiness}
-                options={{ title: "Top"}}
+                name="shopping-card"
+                component={ShoppingCard}
+                options={{ title: "Card"}}
             />
         </Stack.Navigator>
     );

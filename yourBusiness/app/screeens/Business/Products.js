@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from "react-native";
-import { Icon } from "react-native-elements";
-import { size, map } from "lodash";
+import { map } from "lodash";
 
 
 import { firebaseApp } from "../../Utils/firebase";

@@ -7,7 +7,7 @@ import { Icon } from 'react-native-elements'
 //------Stacks------//
 import BusinessStack from "./BusinessStack";
 import FavoritesStack from "./FavoritesStack";
-import TopBusinessStack from "./TopBusinessStack";
+import ShoppingCardStack from "./ShoppingCardStack";
 import SearchStack from "./SearchStack";
 import AccountStack from "./AccountStack";
 import MyEcommerceStack from "./MyEcommerceStack";
@@ -39,9 +39,9 @@ export default function Navigation() {
             options={{ title: "Mi E-commer"}}
         />
         <Tab.Screen 
-            name="favorite" 
-            component={TopBusinessStack}
-            options={{ title: "Favorios"}}
+            name="card" 
+            component={ShoppingCardStack}
+            options={{ title: "Carrito"}}
          />  
         <Tab.Screen 
             name="search" 
@@ -63,13 +63,13 @@ function screenOptions(route, color) {
 
     switch (route.name) {
         case "business":
-                iconName = "cart"
+                iconName = "shopping"
             break;
         case "myEcommerce":
                 iconName = "store"
             break;
-        case "favorite":
-            iconName = "heart-outline"
+        case "card":
+            iconName = "cart"
             break;
         case "search":
             iconName = "magnify"
