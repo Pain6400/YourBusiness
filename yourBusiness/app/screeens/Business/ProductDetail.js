@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, ScrollView, Dimensions } from "react-native";
 import Carousel from "../../Components/Carousel";
 import TitleEcommerce from "../../Components/TitleEcommerce";
@@ -9,14 +9,20 @@ const screenWith = Dimensions.get("window").width;
 import { Icon, Button } from 'react-native-elements';
 import Toast from "react-native-easy-toast";
 
+import { firebaseApp } from "../../Utils/firebase";
+import * as firebase from "firebase/app";
+import "firebase/firestore";
+const db = firebase.firestore(firebaseApp);
 
 export default function ProductDetail(props){
 
     const toastRef = useRef();
-
+    const [isInCard, setIsInCard] = useState(false);
+    const [userLogger, setUserLogger] = useState(false);
     const { item } = props.route.params;
     const product = JSON.parse(item);
     const [queantity, setQuantity] = useState(0);
+
     const listInfo =  [
         {
             text: product.productPrice,
@@ -73,15 +79,76 @@ export default function ProductDetail(props){
         }
     ]
 
-    const addCard = () => {
-        if(queantity != 0 && queantity != null)
+    useEffect(() => {
+        if(userLogger)
         {
-            console.log("ok")
+            db.collection("ShoppingCard")
+                .where("productId", "==", product.productId)
+                .where("idUser", "==", firebase.auth().currentUser.uid)
+                .get()
+                .then((response) => {
+                    if(response.docs.length == 1)
+                    {
+                        setIsInCard(true);
+                    }
+                })
+        }
+        
+    }, [userLogger, product])
+
+    firebase.auth().onAuthStateChanged((user) => {
+        user ? setUserLogger(true) : setUserLogger(false);
+    })
+
+    const addCard = () => {
+        if(!userLogger)
+        {
+            toastRef.current.show("Para agregar al carrito debe de inisiar sesión");
         } else {
-            toastRef.current.show("Debe de seleccionar una cantidad")
+            if(queantity != 0 && queantity != null)
+            {
+                const payLoad = {
+                    idUser: firebase.auth().currentUser.uid,
+                    productId: product.productId
+                }
+
+                db.collection("ShoppingCard")
+                    .add(payLoad)
+                    .then(() => {
+                        setIsInCard(true);
+                        toastRef.current.show("Producto agregado al carrito de compra")
+                    }).catch(() => {
+                        toastRef.current.show("Error al agregar al carrito el producto")
+                    })
+
+            } else {
+                toastRef.current.show("Debe de seleccionar una cantidad")
+            }
         }
     }
     
+    const removeCard = () => {
+        db.collection("ShoppingCard")
+            .where("productId", "==", product.productId)
+            .where("idUser", "==", firebase.auth().currentUser.uid)
+            .get()
+            .then((response) => {
+                response.forEach((doc) => {
+                    const idCard = doc.id;
+
+                    db.collection("ShoppingCard")
+                        .doc(idCard)
+                        .delete()
+                        .then(() => {
+                            setIsInCard(false);
+                            toastRef.current.show("Producto eliminado del carrito de compra")
+                        }).catch(() => {
+                            toastRef.current.show("Error al eliminar producto del carrito")
+                        })
+                });
+            })
+    }
+
     return (
         <ScrollView vertical style={styles.viewBody}>
             <Carousel
@@ -118,17 +185,17 @@ export default function ProductDetail(props){
             />
 
             <Button
-                title="Agregar al carrito"
+                title={ isInCard ? "Eliminar del carrito" : "Agregar al carrito"}
                 containerStyle={styles.btnContainerAddProduct}
-                buttonStyle={styles.btnAddPrduct}
+                buttonStyle={isInCard ? styles.btnAddPrductIncard : styles.btnAddPrduct}
                 icon={
                     <Icon 
                         type="material-community"
-                        name="cart-outline"
-                        color="#FFFFFF"
+                        name={ isInCard ? "cart-arrow-right" : "cart-outline" }
+                        color={"#FFFFFF"}
                     />
                 }
-                onPress={addCard}
+                onPress={isInCard ? removeCard : addCard}
             />
 
             <Toast ref={toastRef} position="center" opacity={0.9} />
@@ -151,5 +218,11 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderBottomColor: "#DCD2D2",
         borderBottomEndRadius: 2
+    },
+    btnAddPrductIncard:{
+        backgroundColor: "#F52C2C",
+    },
+    btnAddPrduct: {
+        backgroundColor: "#00a680",
     }
 });

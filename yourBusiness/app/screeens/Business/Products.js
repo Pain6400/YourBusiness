@@ -26,7 +26,7 @@ export default function Products(props) {
         .then((response) => {
             response.forEach((docs) => {
                 const product = docs.data();
-                products.productId = docs.id;
+                product.productId = docs.id;
                 products.push(product);
             });
             setProducts(products);
