@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
-import { Icon } from 'react-native-elements'
+import React, { useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { Icon, Button } from 'react-native-elements'
 import { firebaseApp } from "../../Utils/firebase";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
@@ -10,46 +10,48 @@ const db = firebase.firestore(firebaseApp);
 import { useFocusEffect } from '@react-navigation/native';
 
 export default function MyEcommerce(props) {
-    const [user, setUser] = useState(null);
     const [mybusiness, setMyBusiness] = useState([]);
     const [totalBusiness, setTotalBusiness] = useState(0);
     const [startBusiness, setStartBusiness] = useState(null);
     const [loading, setIsLoading] = useState(false);
-    const [userId, setUserId] = useState(null);
+    const [userLogger, setUserLogger] = useState(false);
 
     const { navigation } = props;
-    useEffect(() => {      
-        firebase.auth().onAuthStateChanged((userInfo) => {
-            setUserId(userInfo.uid);
-            setUser(userInfo);
-        })
-    }, [])
+
+  
+    firebase.auth().onAuthStateChanged((user) => {
+        user ? setUserLogger(true) : setUserLogger(false);
+    });
 
     useFocusEffect(
         React.useCallback(() => {
-            db.collection("Ecommerce").where("userId", "==", userId).get().then((snap) => {
-                setTotalBusiness(snap.size)
-            })
-    
-            const resultBusiness = [];
-    
-            db.collection("Ecommerce")
-                .where("userId", "==", userId)
-                .orderBy("createAt", "desc")
-                .limit(10)
-                .get()
-                .then((response) => {
-                    setStartBusiness(response.docs[response.docs.length - 1]);
-    
-                    response.forEach((docs) => {
-                        const business = docs.data();
-                        business.id = docs.id;
-                        resultBusiness.push(business);
-                    });
-    
-                    setMyBusiness(resultBusiness);
+            if(userLogger)
+            {
+                const userId = firebase.auth().currentUser.uid;
+                db.collection("Ecommerce").where("userId", "==", userId).get().then((snap) => {
+                    setTotalBusiness(snap.size)
                 })
-        }, [userId])
+        
+                const resultBusiness = [];
+        
+                db.collection("Ecommerce")
+                    .where("userId", "==", userId)
+                    .orderBy("createAt", "desc")
+                    .limit(10)
+                    .get()
+                    .then((response) => {
+                        setStartBusiness(response.docs[response.docs.length - 1]);
+        
+                        response.forEach((docs) => {
+                            const business = docs.data();
+                            business.id = docs.id;
+                            resultBusiness.push(business);
+                        });
+        
+                        setMyBusiness(resultBusiness);
+                    })
+            }
+        }, [userLogger])
     );
 
     const loadNextBusiness = () => {
@@ -58,7 +60,7 @@ export default function MyEcommerce(props) {
         mybusiness.length < totalBusiness && setIsLoading(true);
 
         db.collection("Ecommerce")
-            .where("userId", "==", userId)
+            .where("userId", "==", firebase.auth().currentUser.uid)
             .orderBy("createAt", "desc")
             .startAfter(startBusiness.data().createAt)
             .limit(10)
@@ -80,26 +82,55 @@ export default function MyEcommerce(props) {
             })    
     }
 
+    if(!userLogger)
+    {
+        return <UserNoLogger navigation={navigation} />
+    }
+
     return (
         <View style={styles.viewBody}>
-            {userId && (
-                <ListMyEcommerce
-                    business={mybusiness}
-                    loadNextBusiness={loadNextBusiness}
-                    loading={loading}
-                    navigation={navigation}
-                />
-            )}
-            {user && (
-                <Icon
-                    reverse
-                    type="material-community"
-                    name="plus"
-                    color="#00a680"
-                    containerStyle={styles.btnContainer}
-                    onPress={() => navigation.navigate("add-business")}
-                />
-            )}
+            {
+                userLogger ?
+                    <>
+                        <ListMyEcommerce
+                            business={mybusiness}
+                            loadNextBusiness={loadNextBusiness}
+                            loading={loading}
+                            navigation={navigation}
+                        />
+
+                        <Icon
+                            reverse
+                            type="material-community"
+                            name="plus"
+                            color="#00a680"
+                            containerStyle={styles.btnContainer}
+                            onPress={() => navigation.navigate("add-business")}
+                        />
+                    </>
+                    : 
+                    <UserNoLogger navigation={navigation} />
+        }
+        </View>
+    )
+}
+
+function UserNoLogger(props)
+{
+    const { navigation } = props;
+
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Icon
+                type="material-community" name="alert-outline" size={50}
+            />
+            <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Necesitas iniciar secion</Text>
+            <Button
+                title="Ir al login"
+                containerStyle={{ marginTop: 20, width: "80%" }}
+                buttonStyle={{ backgroundColor: "#00a680" }}
+                onPress={() => navigation.navigate("account")}
+            />
         </View>
     )
 }

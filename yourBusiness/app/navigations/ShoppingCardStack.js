@@ -10,7 +10,7 @@ export default function ShoppingCardStack() {
             <Stack.Screen
                 name="shopping-card"
                 component={ShoppingCard}
-                options={{ title: "Card"}}
+                options={{ title: "Carrito"}}
             />
         </Stack.Navigator>
     );
