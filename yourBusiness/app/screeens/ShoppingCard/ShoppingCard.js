@@ -9,10 +9,11 @@ import {
     Alert
  } from "react-native";
 
- import { Image, Icon, Button } from "react-native-elements";
+ import { Image, Icon, Button, Divider } from "react-native-elements";
  import { useFocusEffect } from '@react-navigation/native';
- import Loading from "../../Components/Loading";
  import { size } from "lodash";
+ import Toast from "react-native-easy-toast";
+ import Loading from "../../Components/Loading";
 
  import { firebaseApp } from "../../Utils/firebase";
  import firebase from "firebase/app";
@@ -21,15 +22,17 @@ import {
  const db = firebase.firestore(firebaseApp);   
 
 export default function ShoppingCard(props){
+    const toastRef = useRef();
     const { navigation } = props;
     const [products, setProducts] = useState(null);
     const [userLogger, setUserLogger] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [reload, setReload] = useState(false);
 
     firebase.auth().onAuthStateChanged((user) => {
         user ? setUserLogger(true) : setUserLogger(false);
     });
 
-    //console.log(products)
 
     useFocusEffect(
         useCallback(() => {
@@ -42,7 +45,12 @@ export default function ShoppingCard(props){
                         const idProductsArray = [];
 
                         response.forEach((doc) => {
-                            idProductsArray.push(doc.data().productId)
+                            const productData = {};
+                            productData.cartId = doc.id;
+                            productData.productId = doc.data().productId;
+                            productData.quantity = doc.data().quantity;
+
+                            idProductsArray.push(productData)
                         })
 
                         if (size(idProductsArray) !== 0) {
@@ -51,6 +59,9 @@ export default function ShoppingCard(props){
                                 response.forEach((doc) => {
                                     const product = doc.data();
                                     product.productId = doc.id;
+                                    const quantity = idProductsArray.filter(f => f.productId == product.productId);
+                                    product.quantity = quantity[0].quantity;
+                                    product.cartId = quantity[0].cartId;
                                     products.push(product);
                                 });
 
@@ -61,7 +72,8 @@ export default function ShoppingCard(props){
                         }
                     });
             }
-        }, [userLogger])
+            setReload(false)
+        }, [userLogger, reload])
     )
 
     if(!userLogger)
@@ -76,8 +88,9 @@ export default function ShoppingCard(props){
 
     const getDataProduct = (idProductsArray) => {
         const arrayProducts = [];
-        idProductsArray.forEach((productId) => {
-            const result = db.collection("Product").doc(productId).get();
+        idProductsArray.forEach((product) => {
+            const result = db.collection("Product").doc(product.productId).get();
+            //console.log(result)
             arrayProducts.push(result);
         });
 
@@ -90,7 +103,12 @@ export default function ShoppingCard(props){
                 (
                     <FlatList 
                         data={products}
-                        renderItem={(product) => <ProductRender product={product} /> }
+                        renderItem={(product) => <ProductRender 
+                                                    product={product} 
+                                                    setIsLoading={setIsLoading}
+                                                    toastRef={toastRef}
+                                                    setReload={setReload}
+                                                /> }
                         keyExtractor={(item, index) => index.toString()}
                     />
                 ) : (
@@ -100,6 +118,9 @@ export default function ShoppingCard(props){
                     </View>
                 )
             }
+
+            <Toast ref={toastRef} position="center" opacity={0.9} />
+            <Loading text="Cargando productos" isVisible={isLoading} />
         </View>
     )
 }
@@ -134,39 +155,130 @@ function UserNoLogger(props)
 }
 
 function ProductRender(props) {
-    const { product } = props;
-    const { productName, images } = product.item;
+    const { product, setIsLoading, toastRef, setReload } = props;
+    const { productName, images, productDescription, productPrice, quantity, cartId } = product.item;
+    const [cantidad, setCantidad] = useState(quantity);
 
-    console.log(product)
+    const updateQuantity = (type) => {
+        if(type === 1) {
+
+            const dato = cantidad -1;
+            if(dato === 0) {
+            } else {         
+                setIsLoading(true)
+                const cart = db.collection("ShoppingCard").doc(cartId);
+                cart.update({
+                    quantity: cantidad -1
+                }).then(() => {
+                    setCantidad(cantidad - 1);
+                    setIsLoading(false);
+                }).catch(() => {
+                    setIsLoading(false)
+                })
+            }
+        } else {
+            setIsLoading(true)
+            const cart = db.collection("ShoppingCard").doc(cartId);
+            cart.update({
+                quantity: cantidad + 1
+            }).then(() => {
+                setCantidad(cantidad + 1);
+                setIsLoading(false)
+            }).catch(() => {
+                setIsLoading(false)
+            });
+        }
+    }
+    
+    const deleteCart = () => {
+        Alert.alert(
+            "Eliminar producto del carrito",
+            "¿Estas seguro de eliminar el producto del carrito de compra?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                {
+                    text: "Eliminar",
+                    onPress: removeCart,
+                }
+            ],
+            { cancelable: false}
+        );
+    }
+
+    const removeCart = () => {
+        setIsLoading(true);
+        db.collection("ShoppingCard")
+            .doc(cartId)
+            .delete()
+            .then(() => {   
+                setIsLoading(false);
+                setReload(true)
+                toastRef.current.show("Producto eliminado correctamente");
+            }).catch((e) => {
+                setIsLoading(false);
+                toastRef.current.show("Error al eliminar producto");
+            })
+    }
+
     return (
-        <View style={styles.products}>
-            <TouchableOpacity onPress={() => console.log("g")}>
-                <Image 
-                    resizeMode="cover"
-                    style={styles.image}
-                    PlaceholderContent={<ActivityIndicator color="#fff" />}
-                    source={
-                        images[0]
-                        ? { uri : images[0]}
-                        : require("../../../assets/Images/no-image.png")
-                    }
-                />
-                <View style={styles.info}>
-                    <Text style={styles.name}>{productName}</Text>
-                    <Icon 
-                        type="material-community"
-                        name="cart"
-                        color="#f00"
-                        containerStyle={styles.card}
-                        onPress={() => console.log("d")}
-                        underlayColor="transparent"
+        <TouchableOpacity onPress={() => console.log(cartId)}>
+            <View style={styles.product}>
+                <View style={styles.viewImage}>
+                    <Image
+                        resizeMode="cover"
+                        style={styles.image}
+                        PlaceholderContent={<ActivityIndicator color="#fff" />}
+                        source={
+                            images[0]
+                                ? { uri: images[0] }
+                                : require("../../../assets/Images/no-image.png")
+                        }
                     />
                 </View>
-            </TouchableOpacity>
-
-        </View>
+                <View>
+                    <Text style={styles.name}>{productName}</Text>
+                    <Text style={styles.total}>L. {productPrice}</Text>
+                    <Text>{productDescription.substr(0, 60)}</Text>
+                    <View style={styles.form}>
+                    <Button
+                            title="-"
+                            buttonStyle={styles.btnmas}
+                            containerStyle={styles.btnMasContainer}
+                            onPress={() => updateQuantity(1)}
+                            type="outline"
+                        />
+                        <View style={styles.viewQuantity}>
+                            <Text style={styles.quantity}>{cantidad}</Text>
+                        </View>
+                        <Button
+                            title="+"
+                            buttonStyle={styles.btnmas}
+                            containerStyle={styles.btnMasContainer}
+                            onPress={() => updateQuantity(2)}
+                            type="outline"
+                        />
+                        <Icon
+                            type="material-community"
+                            name="delete-outline"
+                            color="#f00"
+                            containerStyle={styles.card}
+                            size={40}
+                            onPress={deleteCart}
+                            underlayColor="transparent"
+                        />
+                    </View>
+                </View>
+            </View>
+            <Text numberOfLines={1}>
+            ______________________________________________________________
+            </Text>
+        </TouchableOpacity>
     )
 }
+
 
 const styles = StyleSheet.create({
     viewBody: {
@@ -177,33 +289,51 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10
     },
-    products: {
+    product: {
+        flexDirection: "row",
         margin: 10,
     },
     image: {
-        width: "100%",
-        height: 180
-    },
-    info: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexDirection: "row",
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
-        marginTop: -30,
-        backgroundColor: "#fff"
+        width: 100,
+        height: 100
     },
     name: {
-        fontWeight: "bold",
-        fontSize: 15
+        fontWeight: "bold"
+    },
+    total: {
+        color: "#00a680"
     },
     card: {
-        marginTop: - 35,
-        backgroundColor: "#fff",
-        padding: 15,
-        borderRadius: 100
-    } 
+        //padding: 15,
+    },
+    viewImage: {
+        marginRight: 15
+    },
+    form: {
+        flex: 1,
+        flexDirection: "row",
+        marginTop: 10
+    },
+    btnmas: {
+        width: 50,
+        height: 40
+    },
+    quantity: {
+        borderWidth: 1,
+        borderColor: "gray",
+        width: 50,
+        textAlign: "center",
+        borderRadius: 10,
+        height: 30,
+        fontSize: 15,
+        fontWeight: "bold"
+    },
+    viewQuantity: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 10,
+    },
+    btnMasContainer:{
+        marginRight: 10,
+    },
 });

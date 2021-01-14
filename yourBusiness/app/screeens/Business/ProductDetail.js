@@ -109,7 +109,8 @@ export default function ProductDetail(props){
             {
                 const payLoad = {
                     idUser: firebase.auth().currentUser.uid,
-                    productId: product.productId
+                    productId: product.productId,
+                    quantity: queantity
                 }
 
                 db.collection("ShoppingCard")
