@@ -15,7 +15,7 @@ import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
 export default function ProductDetail(props){
-
+    
     const toastRef = useRef();
     const [isInCard, setIsInCard] = useState(false);
     const [userLogger, setUserLogger] = useState(false);

@@ -6,7 +6,6 @@ import { Icon } from 'react-native-elements'
 
 //------Stacks------//
 import BusinessStack from "./BusinessStack";
-import FavoritesStack from "./FavoritesStack";
 import ShoppingCardStack from "./ShoppingCardStack";
 import SearchStack from "./SearchStack";
 import AccountStack from "./AccountStack";
