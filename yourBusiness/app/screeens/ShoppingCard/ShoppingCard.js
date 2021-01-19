@@ -9,7 +9,7 @@ import {
     Alert
  } from "react-native";
 
- import { Image, Icon, Button, Divider } from "react-native-elements";
+ import { Image, Icon, Button } from "react-native-elements";
  import { useFocusEffect } from '@react-navigation/native';
  import { size } from "lodash";
  import Toast from "react-native-easy-toast";
@@ -108,6 +108,7 @@ export default function ShoppingCard(props){
                                                     setIsLoading={setIsLoading}
                                                     toastRef={toastRef}
                                                     setReload={setReload}
+                                                    navigation={navigation}
                                                 /> }
                         keyExtractor={(item, index) => index.toString()}
                     />
@@ -155,8 +156,8 @@ function UserNoLogger(props)
 }
 
 function ProductRender(props) {
-    const { product, setIsLoading, toastRef, setReload } = props;
-    const { productName, images, productDescription, productPrice, quantity, cartId } = product.item;
+    const { product, setIsLoading, toastRef, setReload, navigation } = props;
+    const { productName, images, productDescription, productPrice, quantity, cartId, productId } = product.item;
     const [cantidad, setCantidad] = useState(quantity);
 
     const updateQuantity = (type) => {
@@ -224,7 +225,7 @@ function ProductRender(props) {
     }
 
     return (
-        <TouchableOpacity onPress={() => console.log(cartId)}>
+        <TouchableOpacity onPress={() => navigation.navigate("Order", { cartId, quantity, productId, productPrice, productName, productDescription, images  })}>
             <View style={styles.product}>
                 <View style={styles.viewImage}>
                     <Image
