@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
-import { Image } from "react-native-elements";
+import { Icon, Button, Image } from 'react-native-elements';
+import {Picker} from '@react-native-picker/picker';
+import { isEmpty  } from "lodash";
+import Toast from "react-native-easy-toast";
 
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
@@ -11,12 +14,55 @@ const db = firebase.firestore(firebaseApp);
 
 
 export default function Order(props){
+    const toastRef = useRef();
     const { navigation } = props;
-    const { cartId, productId, productName, productDescription, images, productPrice, quantity } = props.route.params;
+    const { cartId, productId, productName, images, productPrice, quantity, toastRefCart } = props.route.params;
+    const [pago, setPago] = useState("");
+    const [address, setAddress] = useState({});
+    const [errors, setErrors] = useState(false);
+    const [isComplete, serIsComplete] = useState(false);
+
+    useEffect(() => {
+        db.collection("Address")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+        .then((response) => {
+            const data = response.data();
+            data.id = response.id;
+            setAddress(data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
+
+    const onNextStep = () => {
+        if (isEmpty(pago)) {
+            setErrors(true)
+            toastRef.current.show("Debe de seleccionar un metodo de pago");
+        } else {
+          setErrors(false)
+        }
+    };
+
+    const submit = () => {
+        db.collection("Orders")
+            .add({
+                userId: firebase.auth().currentUser.uid,
+                addressId: address.id,
+                productId: productId,
+                cartId: cartId,
+                paymentMethod: pago,
+            }).then((response) => {
+                toastRefCart.current.show("Pedido creado correctamente", 3000)
+                navigation.goBack();
+            }).catch(() => {
+                toastRef.current.show("Error al crear pedido", 3000)
+            })
+    }
 
     return (
         <View style={{ flex: 1 }}>
-            <ProgressSteps>
+            <ProgressSteps isComplete={isComplete}>
                 <ProgressStep label="Resumen">
                     <View style={{ alignItems: 'center' }}>
                         <Image
@@ -37,17 +83,60 @@ export default function Order(props){
                         <Text style={styles.info}>Total:                    {productPrice * quantity}</Text>
                     </View>
                 </ProgressStep>
-                <ProgressStep label="Metodo de pago">
+                <ProgressStep label="Metodo de pago" onNext={onNextStep} errors={errors}>
                     <View style={{ alignItems: 'center' }}>
-                        <Text>This is the content within step 2!</Text>
+                        <Picker
+                            selectedValue={pago}
+                            style={{ height: 50, width: "100%" }}
+                            onValueChange={(item, index) => setPago(item)}
+                        >
+                            <Picker.Item label="--Seleccione el metodo de pago--" value="" />
+                            <Picker.Item label="Efectivo" value="Efectivo" />
+                            <Picker.Item label="Paypal" value="Paypal" />
+                        </Picker>
                     </View>
                 </ProgressStep>
-                <ProgressStep label="Direccion">
+                <ProgressStep label="Direccion" onSubmit={submit}>
                     <View style={{ alignItems: 'center' }}>
-                        <Text>This is the content within step 3!</Text>
+                        {
+                            address ? (
+                                <View style={styles.viewAddress}>
+                                        <Text style={styles.address}>{address.nombreDireccion}</Text>
+                                        <Text>{address.quienRecibe}</Text>
+                                        <Text>{address.colonia}</Text>
+                                        <Text>{address.telefono}</Text>
+                                        <Text>{address.rtn}</Text>
+                                        <Text>{address.direccionDetalle}</Text>
+                                        <Text>{address.puntoreFerencia}</Text>
+                                </View>
+                            ) : (
+                                <UserNoLogger navigation={navigation} />
+                            )
+                        }
                     </View>
                 </ProgressStep>
             </ProgressSteps>
+            <Toast ref={toastRef} position="center" opacity={0.9} />
+        </View>
+    )
+}
+
+function UserNoLogger(props)
+{
+    const { navigation } = props;
+
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Icon
+                type="material-community" name="alert-outline" size={50}
+            />
+            <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Necesitas crear una direccion</Text>
+            <Button
+                title="Ir al crear una direccion"
+                containerStyle={{ marginTop: 20, width: "80%" }}
+                buttonStyle={{ backgroundColor: "#00a680" }}
+                onPress={() => navigation.navigate("account")}
+            />
         </View>
     )
 }
@@ -63,5 +152,13 @@ const styles = StyleSheet.create({
     },
     info: {
         marginTop: 10
-    }
+    }, 
+    viewAddress: {
+        borderWidth: 2,
+        padding: 30,
+        borderRadius: 10
+    },
+     address: {
+        fontWeight: "bold",
+     }
 })

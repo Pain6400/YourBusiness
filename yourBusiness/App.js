@@ -9,7 +9,8 @@ LogBox.ignoreLogs([
   "'ListItem.leftIcon'", 
   "'ListItem.title'",
   "Warning: Cannot update a component from inside the function body of a different component.",
-  "Warning: Can't perform a React state update on an unmounted component."
+  "Warning: Can't perform a React state update on an unmounted component.",
+  "Non-serializable values were found in the navigation state. Check:"
 ]);
 LogBox.ignoreAllLogs();
 

@@ -29,7 +29,6 @@ export default function ChangeEmailFormn(props) {
             setErrors({ password: "El password no puede estar vacio" });  
         } else {
             setIsLoading(true);
-            console.log(newEmail)
             reauthenticate(password)
                 .then(() => {
                 firebase

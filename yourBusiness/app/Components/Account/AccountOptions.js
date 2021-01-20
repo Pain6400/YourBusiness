@@ -6,11 +6,13 @@ import Modal from "../Modal";
 import ChangeNameForm from "../Account/AccountOptionsModals/ChangeNameForm";
 import ChangeEmailForm from "../Account/AccountOptionsModals/ChangeEmailForm";
 import ChangePasswordForm from "../Account/AccountOptionsModals/ChangePasswordForm";
+import AddressForm from "../Account/AccountOptionsModals/AddressForm";
 
 export default function AccountOptions(props) {
     const { userInfo, toastRef, setReloadUserInfo } = props;
     const [showModal, setShowModal] = useState(false);
     const [renderComponent, setRenderComponent] = useState(false);
+
     const selectComponent = (key) => {
         switch (key) {
             case "Name":
@@ -46,12 +48,23 @@ export default function AccountOptions(props) {
 
                     setShowModal(true);
                     break;
+
+                case "Address":
+                    setRenderComponent(
+                        <AddressForm 
+                            setShowModal={setShowModal}
+                            toastRef={toastRef}
+                        />
+                    );
+                    setShowModal(true);
+                break;
                     default: setRenderComponent(null);
                     setShowModal(false);
                 break;
         }
         setShowModal(true);
     }
+
     const menuOptions = generateOptions(selectComponent);
 
     return (
@@ -101,6 +114,13 @@ function generateOptions(selectComponent) {
             iconName: "lock-reset",
             iconColor: "#ccc",
             onPress: () => selectComponent("Password")
+        },
+        {
+            title: "Direccion",
+            iconType: "material-community",
+            iconName: "map-marker",
+            iconColor: "#ccc",
+            onPress: () => selectComponent("Address")
         }
     ]
 }

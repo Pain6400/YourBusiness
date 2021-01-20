@@ -106,7 +106,7 @@ export default function ShoppingCard(props){
                         renderItem={(product) => <ProductRender 
                                                     product={product} 
                                                     setIsLoading={setIsLoading}
-                                                    toastRef={toastRef}
+                                                    toastRefCart={toastRef}
                                                     setReload={setReload}
                                                     navigation={navigation}
                                                 /> }
@@ -156,7 +156,7 @@ function UserNoLogger(props)
 }
 
 function ProductRender(props) {
-    const { product, setIsLoading, toastRef, setReload, navigation } = props;
+    const { product, setIsLoading, toastRef, setReload, navigation, toastRefCart } = props;
     const { productName, images, productDescription, productPrice, quantity, cartId, productId } = product.item;
     const [cantidad, setCantidad] = useState(quantity);
 
@@ -225,7 +225,7 @@ function ProductRender(props) {
     }
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("Order", { cartId, quantity, productId, productPrice, productName, productDescription, images  })}>
+        <TouchableOpacity onPress={() => navigation.navigate("Order", { cartId, quantity, productId, productPrice, productName, productDescription, images, toastRefCart  })}>
             <View style={styles.product}>
                 <View style={styles.viewImage}>
                     <Image
