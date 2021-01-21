@@ -24,7 +24,7 @@ export default function Order(props){
     const [errors, setErrors] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const [order, setOrder] = useState({});
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
 
     console.log(ecommerceId)
     const fireSQL = new FireSQL(firebase.firestore(), { includeId: "id" });
@@ -95,8 +95,14 @@ export default function Order(props){
                 })
         }
 
-
-
+        db.collection("Ecommerce")
+            .doc(ecommerceId)
+            .get()
+            .then((response) => {
+                const data = response.get();
+                const email = data.email;
+            })
+        setIsLoading(false);
     }
 
     return (
