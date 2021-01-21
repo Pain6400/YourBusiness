@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import { Icon, Button, Image } from 'react-native-elements';
 import {Picker} from '@react-native-picker/picker';
@@ -11,7 +12,6 @@ import { FireSQL } from 'firesql';
 
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
-import "firebase/storage";
 
 const db = firebase.firestore(firebaseApp); 
 
