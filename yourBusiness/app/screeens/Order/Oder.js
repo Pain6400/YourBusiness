@@ -3,8 +3,11 @@ import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import { Icon, Button, Image } from 'react-native-elements';
 import {Picker} from '@react-native-picker/picker';
+import Loading from "../../Components/Loading";
 import { isEmpty  } from "lodash";
 import Toast from "react-native-easy-toast";
+import { FireSQL } from 'firesql';
+
 
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
@@ -12,19 +15,24 @@ import "firebase/storage";
 
 const db = firebase.firestore(firebaseApp); 
 
-
 export default function Order(props){
     const toastRef = useRef();
     const { navigation } = props;
-    const { cartId, productId, productName, images, productPrice, quantity, toastRefCart } = props.route.params;
+    const { cartId, productId, productName, images, productPrice, ecommerceId, quantity, toastRefCart } = props.route.params;
     const [pago, setPago] = useState("");
     const [address, setAddress] = useState({});
     const [errors, setErrors] = useState(false);
-    const [isComplete, serIsComplete] = useState(false);
+    const [isComplete, setIsComplete] = useState(false);
+    const [order, setOrder] = useState({});
+    const [isLoading, setIsLoading] = useState(false)
+
+    console.log(ecommerceId)
+    const fireSQL = new FireSQL(firebase.firestore(), { includeId: "id" });
 
     useEffect(() => {
+        const user = firebase.auth().currentUser.uid;
         db.collection("Address")
-        .doc(firebase.auth().currentUser.uid)
+        .doc(user)
         .get()
         .then((response) => {
             const data = response.data();
@@ -33,6 +41,17 @@ export default function Order(props){
         }).catch((error) => {
             console.log(error)
         })
+
+        setOrder({});
+        fireSQL.query(`SELECT * FROM Orders WHERE cartId='${cartId}' AND productId='${productId}' AND userId='${user}'`)
+                .then((response) => {
+                    if(response.length > 0)
+                    {
+                        setOrder(response[0]);
+                        setPago(response[0].paymentMethod)
+                        setIsComplete(true);
+                    }
+                })
     }, [])
 
     const onNextStep = () => {
@@ -44,8 +63,13 @@ export default function Order(props){
         }
     };
 
-    const submit = () => {
-        db.collection("Orders")
+
+    const submit = async () => {
+
+        setIsLoading(true);
+        if(!isComplete)
+        {
+            db.collection("Orders")
             .add({
                 userId: firebase.auth().currentUser.uid,
                 addressId: address.id,
@@ -53,11 +77,26 @@ export default function Order(props){
                 cartId: cartId,
                 paymentMethod: pago,
             }).then((response) => {
-                toastRefCart.current.show("Pedido creado correctamente", 3000)
+                toastRefCart.current.show("Pedido guardado correctamente", 3000)
                 navigation.goBack();
             }).catch(() => {
                 toastRef.current.show("Error al crear pedido", 3000)
             })
+        } else {
+            db.collection("Orders")
+                .doc(order.id)
+                .update({
+                    paymentMethod: pago
+                }).then((response) => {
+                    toastRefCart.current.show("Pedido guardado correctamente", 3000)
+                    navigation.goBack();
+                }).catch(() => {
+                    toastRef.current.show("Error al crear pedido", 3000)
+                })
+        }
+
+
+
     }
 
     return (
@@ -117,6 +156,7 @@ export default function Order(props){
                 </ProgressStep>
             </ProgressSteps>
             <Toast ref={toastRef} position="center" opacity={0.9} />
+            <Loading text="Guardando pedido" isVisible={isLoading} />
         </View>
     )
 }

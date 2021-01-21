@@ -59,19 +59,6 @@ function BusinessRender(props) {
             id,
             name
         })
-    // var ecommerce = db.collection("Ecommerce").doc(id);
-
-    // // Set the "capital" field of the city 'DC'
-    // return ecommerce.update({
-    //     email: "kevin1996mejia@gmail.com"
-    // })
-    // .then(function() {
-    //     console.log("Document successfully updated!");
-    // })
-    // .catch(function(error) {
-    //     // The document probably doesn't exist.
-    //     console.error("Error updating document: ", error);
-    // });
   }
 
   return(

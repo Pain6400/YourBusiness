@@ -36,6 +36,7 @@ export default function ShoppingCard(props){
 
     useFocusEffect(
         useCallback(() => {
+            setProducts(null);
             if (userLogger) {
                 const idUser = firebase.auth().currentUser.uid;
                 db.collection("ShoppingCard")
@@ -83,6 +84,7 @@ export default function ShoppingCard(props){
 
     if(products?.length === 0)
     {
+        console.log(props)
         return <NotFoundProducts />
     }
 
@@ -157,7 +159,7 @@ function UserNoLogger(props)
 
 function ProductRender(props) {
     const { product, setIsLoading, toastRef, setReload, navigation, toastRefCart } = props;
-    const { productName, images, productDescription, productPrice, quantity, cartId, productId } = product.item;
+    const { productName, images, productDescription, productPrice, quantity, cartId, productId, ecommerceId } = product.item;
     const [cantidad, setCantidad] = useState(quantity);
 
     const updateQuantity = (type) => {
@@ -225,7 +227,7 @@ function ProductRender(props) {
     }
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate("Order", { cartId, quantity, productId, productPrice, productName, productDescription, images, toastRefCart  })}>
+        <TouchableOpacity onPress={() => navigation.navigate("Order", { cartId, quantity, productId, productPrice, productName, productDescription, images, ecommerceId, toastRefCart  })}>
             <View style={styles.product}>
                 <View style={styles.viewImage}>
                     <Image

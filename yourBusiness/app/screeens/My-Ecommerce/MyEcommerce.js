@@ -15,9 +15,8 @@ export default function MyEcommerce(props) {
     const [startBusiness, setStartBusiness] = useState(null);
     const [loading, setIsLoading] = useState(false);
     const [userLogger, setUserLogger] = useState(false);
-
+    const [userInfo, setUserInfo] = useState({});
     const { navigation } = props;
-
   
     firebase.auth().onAuthStateChanged((user) => {
         user ? setUserLogger(true) : setUserLogger(false);
@@ -49,6 +48,14 @@ export default function MyEcommerce(props) {
                         });
         
                         setMyBusiness(resultBusiness);
+                    })
+
+                db.collection("User")
+                    .doc(userId)
+                    .get()
+                    .then((response) => {
+                        const data = response.data();
+                        setUserInfo(data);
                     })
             }
         }, [userLogger])
@@ -91,26 +98,27 @@ export default function MyEcommerce(props) {
         <View style={styles.viewBody}>
             {
                 userLogger ?
-                    <>
-                        <ListMyEcommerce
-                            business={mybusiness}
-                            loadNextBusiness={loadNextBusiness}
-                            loading={loading}
-                            navigation={navigation}
-                        />
+                        userInfo.userType == 2 ?
+                        <>
+                            <ListMyEcommerce
+                                business={mybusiness}
+                                loadNextBusiness={loadNextBusiness}
+                                loading={loading}
+                                navigation={navigation}
+                            />
 
-                        <Icon
-                            reverse
-                            type="material-community"
-                            name="plus"
-                            color="#00a680"
-                            containerStyle={styles.btnContainer}
-                            onPress={() => navigation.navigate("add-business")}
-                        />
-                    </>
+                            <Icon
+                                reverse
+                                type="material-community"
+                                name="plus"
+                                color="#00a680"
+                                containerStyle={styles.btnContainer}
+                                onPress={() => navigation.navigate("add-business")}
+                            />
+                        </> : <UserType navigation={navigation} />
                     : 
                     <UserNoLogger navigation={navigation} />
-        }
+            }
         </View>
     )
 }
@@ -118,7 +126,6 @@ export default function MyEcommerce(props) {
 function UserNoLogger(props)
 {
     const { navigation } = props;
-
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             <Icon
@@ -135,6 +142,24 @@ function UserNoLogger(props)
     )
 }
 
+function UserType(props)
+{
+    const { navigation } = props;
+    return (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Icon
+                type="material-community" name="alert-outline" size={50}
+            />
+            <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Necesitas iniciar sesion con una cuenta empresarial</Text>
+            <Button
+                title="Ir al login"
+                containerStyle={{ marginTop: 20, width: "80%" }}
+                buttonStyle={{ backgroundColor: "#00a680" }}
+                onPress={() => navigation.navigate("account")}
+            />
+        </View>
+    )
+}
 const styles = StyleSheet.create({
     viewBody: {
         flex: 1,
