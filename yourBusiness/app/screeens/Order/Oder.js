@@ -8,7 +8,8 @@ import Loading from "../../Components/Loading";
 import { isEmpty  } from "lodash";
 import Toast from "react-native-easy-toast";
 import { FireSQL } from 'firesql';
-
+import email from 'react-native-email'
+import { sendEmail } from '../../Utils/sendEmail';
 
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
@@ -26,7 +27,6 @@ export default function Order(props){
     const [order, setOrder] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log(ecommerceId)
     const fireSQL = new FireSQL(firebase.firestore(), { includeId: "id" });
 
     useEffect(() => {
@@ -63,6 +63,21 @@ export default function Order(props){
         }
     };
 
+    const handleEmail = (ecommerceMail) => {
+
+        const emailto = firebase.auth().currentUser.providerData[0].email;
+        const to = [emailto, ecommerceMail ] // string or array of email addresses
+        email(to, {
+            // Optional additional arguments
+            //cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
+            //bcc: 'mee@mee.com', // string or array of email addresses
+            subject: 'Se ha realizado un pedido',
+            body: `Se ha realizado un pedido por un monto de: ${productPrice * quantity}`
+        }).then((response) => {
+            console.log(response)
+        })
+        .catch(console.error)
+      }
 
     const submit = async () => {
 
@@ -78,7 +93,6 @@ export default function Order(props){
                 paymentMethod: pago,
             }).then((response) => {
                 toastRefCart.current.show("Pedido guardado correctamente", 3000)
-                navigation.goBack();
             }).catch(() => {
                 toastRef.current.show("Error al crear pedido", 3000)
             })
@@ -89,20 +103,20 @@ export default function Order(props){
                     paymentMethod: pago
                 }).then((response) => {
                     toastRefCart.current.show("Pedido guardado correctamente", 3000)
-                    navigation.goBack();
                 }).catch(() => {
                     toastRef.current.show("Error al crear pedido", 3000)
                 })
         }
 
+
         db.collection("Ecommerce")
-            .doc(ecommerceId)
-            .get()
-            .then((response) => {
-                const data = response.get();
-                const email = data.email;
-            })
-        setIsLoading(false);
+        .doc(ecommerceId)
+        .get()
+        .then((response) => {
+            const ecommerce = response.data();
+            handleEmail(ecommerce.email)
+            navigation.goBack();
+        })
     }
 
     return (
