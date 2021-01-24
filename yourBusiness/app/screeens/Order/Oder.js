@@ -9,7 +9,6 @@ import { isEmpty  } from "lodash";
 import Toast from "react-native-easy-toast";
 import { FireSQL } from 'firesql';
 import email from 'react-native-email'
-import { sendEmail } from '../../Utils/sendEmail';
 
 import { firebaseApp } from "../../Utils/firebase";
 import firebase from "firebase/app";
@@ -90,7 +89,9 @@ export default function Order(props){
                 addressId: address.id,
                 productId: productId,
                 cartId: cartId,
+                ecommerceId: ecommerceId,
                 paymentMethod: pago,
+                status: "Open"
             }).then((response) => {
                 toastRefCart.current.show("Pedido guardado correctamente", 3000)
             }).catch(() => {

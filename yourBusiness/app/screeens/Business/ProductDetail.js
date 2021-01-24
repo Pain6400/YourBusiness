@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { StyleSheet, ScrollView, Dimensions } from "react-native";
+import { StyleSheet, ScrollView, Dimensions, Text } from "react-native";
 import Carousel from "../../Components/Carousel";
 import TitleEcommerce from "../../Components/TitleEcommerce";
 import { ListItem } from 'react-native-elements'
@@ -22,6 +22,7 @@ export default function ProductDetail(props){
     const { item } = props.route.params;
     const product = JSON.parse(item);
     const [queantity, setQuantity] = useState(0);
+    const [userInfo, setUserInfo] = useState({});
 
     const listInfo =  [
         {
@@ -82,15 +83,24 @@ export default function ProductDetail(props){
     useEffect(() => {
         if(userLogger)
         {
+            const userId = firebase.auth().currentUser.uid
             db.collection("ShoppingCard")
                 .where("productId", "==", product.productId)
-                .where("idUser", "==", firebase.auth().currentUser.uid)
+                .where("idUser", "==", userId)
                 .get()
                 .then((response) => {
                     if(response.docs.length == 1)
                     {
                         setIsInCard(true);
                     }
+                })
+
+            db.collection("User")
+                .doc(userId)
+                .get()
+                .then((response) => {
+                    const user = response.data();
+                    setUserInfo(user)
                 })
         }
         
@@ -177,27 +187,33 @@ export default function ProductDetail(props){
                 />
             ))}
 
-            <RNPickerSelect
-                value={queantity}
-                key={queantity}
-                onValueChange={(value) => setQuantity(value)}
-                items={cantidad}
-                style={styles.quantity}
-            />
+            {
+                userInfo.userType == 1 ? (
+                    <>
+                        <RNPickerSelect
+                            value={queantity}
+                            key={queantity}
+                            onValueChange={(value) => setQuantity(value)}
+                            items={cantidad}
+                            style={styles.quantity}
+                        />
 
-            <Button
-                title={ isInCard ? "Eliminar del carrito" : "Agregar al carrito"}
-                containerStyle={styles.btnContainerAddProduct}
-                buttonStyle={isInCard ? styles.btnAddPrductIncard : styles.btnAddPrduct}
-                icon={
-                    <Icon 
-                        type="material-community"
-                        name={ isInCard ? "cart-arrow-right" : "cart-outline" }
-                        color={"#FFFFFF"}
-                    />
-                }
-                onPress={isInCard ? removeCard : addCard}
-            />
+                        <Button
+                            title={isInCard ? "Eliminar del carrito" : "Agregar al carrito"}
+                            containerStyle={styles.btnContainerAddProduct}
+                            buttonStyle={isInCard ? styles.btnAddPrductIncard : styles.btnAddPrduct}
+                            icon={
+                                <Icon
+                                    type="material-community"
+                                    name={isInCard ? "cart-arrow-right" : "cart-outline"}
+                                    color={"#FFFFFF"}
+                                />
+                            }
+                            onPress={isInCard ? removeCard : addCard}
+                        />
+                    </>
+                ) : <Text></Text>
+            }
 
             <Toast ref={toastRef} position="center" opacity={0.9} />
         </ScrollView>
