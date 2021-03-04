@@ -25,7 +25,6 @@ export default function OrdersToProcess(props)
         user ? setUserLogger(true) : setUserLogger(false);
     });
 
-
     useFocusEffect(
         React.useCallback(() => {
             if(userLogger)

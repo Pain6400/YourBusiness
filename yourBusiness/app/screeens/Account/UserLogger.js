@@ -17,8 +17,9 @@ export default function UserLogger(){
 
     useEffect(() => {
         (async () => {
-            const user = await firebase.auth().currentUser;
-            setUserInfo(user);
+            firebase.auth().onAuthStateChanged((user) => {
+                !user ? setUserInfo({}) : setUserInfo(user);
+            })
         })()
 
         setReloadUserInfo(false);

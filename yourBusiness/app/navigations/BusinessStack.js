@@ -5,8 +5,9 @@ import EcommerceDetail from "../screeens/Business/EcommerceDetail";
 import Products from "../screeens/Business/Products";
 import ProductDetail from "../screeens/Business/ProductDetail";
 import { Header, Icon } from "react-native-elements";
-import OrdersToProcess from "../screeens/Order/OrdersToProcess";
-import OrderProcesing from "../screeens/Order/OrderProcesing";
+import OrdersToProcess from "../screeens/Order/OrdersToProcessFinalUser";
+import OrderProcesing from "../screeens/Order/OrderProcesingMiPyme";
+import CompleteOrderEcommerce from "../screeens/Order/CompleteOrderEcommerce";
 
 const Stack = createStackNavigator();
 
@@ -55,6 +56,12 @@ export default function BusinessStack() {
                 name="OrderProcesing"
                 component={OrderProcesing}
                 options={{ title: "Lista de pedidos" }}
+            />
+
+            <Stack.Screen
+                name="CompleteOrderEcommerce"
+                component={CompleteOrderEcommerce}
+                options={{ title: "Estado del pedido" }}
             />
         </Stack.Navigator>
     );

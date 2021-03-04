@@ -151,7 +151,6 @@ export default function Order(props){
                             onValueChange={(item, index) => setPago(item)}
                         >
                             <Picker.Item label="--Seleccione el metodo de pago--" value="" />
-                            <Picker.Item label="Efectivo" value="Efectivo" />
                             <Picker.Item label="Paypal" value="Paypal" />
                         </Picker>
                     </View>

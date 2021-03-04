@@ -44,7 +44,7 @@ export default function Search(props){
                 <Picker.Item label="Producto" value="Product" />
             </Picker>
             <SearchBar
-                placeholder="Buscar empresa"
+                placeholder={ type == "Ecommerce"? "Buscar empresa" : type == "Product" ? "Buscar producto": "Buscar" } 
                 onChangeText={(e) => setSearch(e)}
                 containerStyle={styles.searchBar}
                 value={search}

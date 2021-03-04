@@ -50,14 +50,16 @@ function BusinessFooterList(props) {
 
 function OrderRender(props) {
     const { item, navigation } = props;
-    const { images, productName, productPrice, productDescription, id } = item.item;
+    const { images, productName, productPrice, productDescription, id, status } = item.item;
     const imageItem = images[0];
+    
+    const estado = status == "Open" ? "En proceso de aprobacion" : 
+                    status == "processing" ? "Aprobado" :
+                    status == "Paid" ? "Enviando" :
+                    status == "Received" ? "Revibido"  : "";
 
   const ecommerceInfo = () => {
-        // navigation.navigate("myEcommerceDetail", {
-        //     id,
-        //     name
-        // })
+        navigation.navigate("CompleteOrderEcommerce", { product : item.item })
   }
 
   return(
@@ -77,10 +79,15 @@ function OrderRender(props) {
                     style={styles.imageBusiness}
                 />
            </View>
-           <View>
-                <Text style={styles.productName}>{productName}</Text>
-                <Text style={styles.productPrice}>{productPrice}</Text>
-                <Text style={styles.productDescription}>{productDescription.substr(0, 60)}...</Text>
+           <View style={styles.descripcion}>
+               <View>
+               <Text style={styles.productName}>{productName}</Text>
+                    <Text style={styles.productPrice}>{productPrice}</Text>
+                    <Text style={styles.productDescription}>{productDescription.substr(0, 60)}...</Text>
+               </View>
+               <View>
+                    <Text style={styles.productName}>{estado}</Text>
+               </View>
            </View>
          </View>
       </TouchableOpacity>
@@ -92,6 +99,10 @@ const styles = StyleSheet.create({
        marginTop: 10,
        marginBottom: 10,
        alignItems: "center"
+   },
+   descripcion : {
+        flexDirection : "column",
+        alignItems: "center",
    },
    viewBusiness: {
        flexDirection: "row",

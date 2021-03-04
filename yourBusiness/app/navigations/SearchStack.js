@@ -2,8 +2,9 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Search from "../screeens/Search/Search";
 import { Header, Icon } from "react-native-elements";
-import OrdersToProcess from "../screeens/Order/OrdersToProcess";
-import OrderProcesing from "../screeens/Order/OrderProcesing";
+import OrdersToProcess from "../screeens/Order/OrdersToProcessFinalUser";
+import OrderProcesing from "../screeens/Order/OrderProcesingMiPyme";
+import CompleteOrderEcommerce from "../screeens/Order/CompleteOrderEcommerce";
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,13 @@ export default function SearchStack() {
                 component={OrderProcesing}
                 options={{ title: "Lista de pedidos" }}
             />
+
+            <Stack.Screen
+                name="CompleteOrderEcommerce"
+                component={CompleteOrderEcommerce}
+                options={{ title: "Estado del pedido" }}
+            />
+
         </Stack.Navigator>
     );
 }
