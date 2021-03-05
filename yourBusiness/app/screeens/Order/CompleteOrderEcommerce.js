@@ -5,6 +5,7 @@ import { Icon, Button, Image, } from 'react-native-elements';
 import StepIndicator from 'react-native-step-indicator';
 import { firebaseApp } from "../../Utils/firebase";
 import Toast from "react-native-easy-toast";
+import RenderPage from "../../Components/Order/RenderPageOrderFinalUser"
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
@@ -13,26 +14,26 @@ export default function CompleteOrderEcommerce(props) {
     const toastRef = useRef();
     const { navigation } = props;
     const { product } = props.route.params;
+    const { status } = product;
 
-    const { cartId, productId, productName, images, productPrice, ecommerceId, quantity, toastRefCart, status } = product;
     const [shoopingCart, setShoppingCart] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
-    const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 40 }).current;
+    const [titlePage, setTitlePage] = useState("");
 
-    const labels = ["En proceso de aprobacion","Aprobado","Enviando","Recibido"];
-                
-
-    console.log(currentPage, status)
     useEffect(() => {
         if (status === "Open") {
-            setCurrentPage(0);
+            setCurrentPage(1);
+            setTitlePage("En proceso de aprobacion")
         } else if (status === "processing") {
             setCurrentPage(1);
+            setTitlePage("Aprobado")
         } else if (status === "Paid") {
             setCurrentPage(2);
+            setTitlePage("Enviando")
         } else if (status === "received") {
             setCurrentPage(3)
+            setTitlePage("Recibido")
         }
 
         db.collection("ShoppingCard")
@@ -44,22 +45,6 @@ export default function CompleteOrderEcommerce(props) {
             })
     }, [])
 
-    const onViewableItemsChanged = useCallback(({ viewableItems }) => {
-        const visibleItemsCount = viewableItems.length;
-        if (visibleItemsCount !== 0) {
-          setCurrentPage(viewableItems[visibleItemsCount - 1].index);
-        }
-      }, []);
-
-    const renderPage = (item) => {
-        return (
-          <View style={styles.rowItem}>
-            <Text style={styles.title}>{item.item}</Text>
-            <Text style={styles.body}>Test</Text>
-          </View>
-        );
-      };
-
     return (
         <View style={styles.container}>
             <View style={styles.stepIndicator}>
@@ -68,16 +53,15 @@ export default function CompleteOrderEcommerce(props) {
                     stepCount={4}
                     direction="vertical"
                     currentPosition={currentPage}
-                    labels={labels.map((item) => item.title)}
+                    //labels={labels.map((item) => item.title)}
                 />
             </View>
-            <FlatList
-                style={{ flexGrow: 1 }}
-                data={labels}
-                renderItem={(item) => renderPage(item)}
-                //onViewableItemsChanged={onViewableItemsChanged}
-                viewabilityConfig={viewabilityConfig}
-                keyExtractor={(item, index) => index.toString()}
+
+            <RenderPage 
+                titlePage={titlePage} 
+                product={product} 
+                shoopingCart={shoopingCart} 
+                currentPage={currentPage}
             />
         </View>
     );
@@ -91,26 +75,8 @@ const styles = StyleSheet.create({
       backgroundColor: '#ffffff',
     },
     stepIndicator: {
-      marginVertical: 50,
+      marginVertical: 10,
       paddingHorizontal: 20,
-    },
-    rowItem: {
-      flex: 3,
-      paddingVertical: 20,
-    },
-    title: {
-      flex: 1,
-      fontSize: 20,
-      color: '#333333',
-      paddingVertical: 16,
-      fontWeight: '600',
-    },
-    body: {
-      flex: 1,
-      fontSize: 15,
-      color: '#606060',
-      lineHeight: 24,
-      marginRight: 8,
     },
   });
 
