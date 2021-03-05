@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TextInput } from "react-native";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TextInput, FlatList  } from "react-native";
 import Loading from "../../Components/Loading";
-import { Icon, Button, Image,  } from 'react-native-elements';
+import { Icon, Button, Image, } from 'react-native-elements';
+import StepIndicator from 'react-native-step-indicator';
 import { firebaseApp } from "../../Utils/firebase";
 import Toast from "react-native-easy-toast";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
-export default function CompleteOrderEcommerce(props){
+export default function CompleteOrderEcommerce(props) {
     const toastRef = useRef();
     const { navigation } = props;
     const { product } = props.route.params;
@@ -16,13 +17,24 @@ export default function CompleteOrderEcommerce(props){
     const { cartId, productId, productName, images, productPrice, ecommerceId, quantity, toastRefCart, status } = product;
     const [shoopingCart, setShoppingCart] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(0);
+    const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 40 }).current;
 
-    const estado = status == "Open" ? "En proceso de aprobacion" : 
-                    status == "processing" ? "Aprobado" :
-                    status == "Paid" ? "Enviando" :
-                    status == "Received" ? "Revibido"  : "";
+    const labels = ["En proceso de aprobacion","Aprobado","Enviando","Recibido"];
+                
 
+    console.log(currentPage, status)
     useEffect(() => {
+        if (status === "Open") {
+            setCurrentPage(0);
+        } else if (status === "processing") {
+            setCurrentPage(1);
+        } else if (status === "Paid") {
+            setCurrentPage(2);
+        } else if (status === "received") {
+            setCurrentPage(3)
+        }
+
         db.collection("ShoppingCard")
             .doc(product.cartId)
             .get()
@@ -32,62 +44,93 @@ export default function CompleteOrderEcommerce(props){
             })
     }, [])
 
-    return(
-        <ScrollView style={{ height: "100%" }}>
-            <View style={{ marginLeft: 20, marginTop: 20 }}>
-                <Image
-                    resizeMode="cover"
-                    style={styles.image}
-                    PlaceholderContent={<ActivityIndicator color="#fff" />}
-                    source={
-                        images[0]
-                            ? { uri: images[0] }
-                            : require("../../../assets/Images/no-image.png")
-                    }
-                />
+    const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+        const visibleItemsCount = viewableItems.length;
+        if (visibleItemsCount !== 0) {
+          setCurrentPage(viewableItems[visibleItemsCount - 1].index);
+        }
+      }, []);
 
-                <Text style={styles.name}>{productName}</Text>
-                <Text style={styles.info}>Precio:                   {productPrice}</Text>
-                <Text style={styles.info}>Cantidad:                 {shoopingCart.quantity}</Text>
-                <Text style={styles.info}>Total:                    {productPrice * shoopingCart.quantity}</Text>
-                <Text style={styles.name}>{estado}</Text>
-                <TextInput 
-                    multiline={true}
-                    numberOfLines={4}
-                    style={styles.textarea}
-                    value="El producto esta en proceso de aprobacion, espere hasta que la empresa valide su pedido."
+    const renderPage = (item) => {
+        return (
+          <View style={styles.rowItem}>
+            <Text style={styles.title}>{item.item}</Text>
+            <Text style={styles.body}>Test</Text>
+          </View>
+        );
+      };
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.stepIndicator}>
+                <StepIndicator
+                    customStyles={stepIndicatorStyles}
+                    stepCount={4}
+                    direction="vertical"
+                    currentPosition={currentPage}
+                    labels={labels.map((item) => item.title)}
                 />
             </View>
-            <Toast ref={toastRef} position="center" opacity={0.9} />
-            <Loading text="Guardando pedido" isVisible={isLoading} />
-        </ScrollView>
-    )
+            <FlatList
+                style={{ flexGrow: 1 }}
+                data={labels}
+                renderItem={(item) => renderPage(item)}
+                //onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={viewabilityConfig}
+                keyExtractor={(item, index) => index.toString()}
+            />
+        </View>
+    );
+    
 }
 
 const styles = StyleSheet.create({
-    image: {
-        width: 150,
-        height: 150
+    container: {
+      flex: 1,
+      flexDirection: 'row',
+      backgroundColor: '#ffffff',
     },
-    name: {
-        fontWeight: "bold",
-        fontSize: 20
+    stepIndicator: {
+      marginVertical: 50,
+      paddingHorizontal: 20,
     },
-    info: {
-        marginTop: 10
-    }, 
-    viewAddress: {
-        borderWidth: 2,
-        padding: 30,
-        borderRadius: 10
+    rowItem: {
+      flex: 3,
+      paddingVertical: 20,
     },
-     address: {
-        fontWeight: "bold",
-     },
-     textarea: {
-        borderColor: "grey",
-        borderWidth: 1,
-        padding: 5,
-        width: "95%"
-     }
-})
+    title: {
+      flex: 1,
+      fontSize: 20,
+      color: '#333333',
+      paddingVertical: 16,
+      fontWeight: '600',
+    },
+    body: {
+      flex: 1,
+      fontSize: 15,
+      color: '#606060',
+      lineHeight: 24,
+      marginRight: 8,
+    },
+  });
+
+const stepIndicatorStyles = {
+    stepIndicatorSize: 30,
+    currentStepIndicatorSize: 40,
+    separatorStrokeWidth: 3,
+    currentStepStrokeWidth: 5,
+    stepStrokeCurrentColor: '#fe7013',
+    separatorFinishedColor: '#fe7013',
+    separatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorFinishedColor: '#fe7013',
+    stepIndicatorUnFinishedColor: '#aaaaaa',
+    stepIndicatorCurrentColor: '#ffffff',
+    stepIndicatorLabelFontSize: 15,
+    currentStepIndicatorLabelFontSize: 15,
+    stepIndicatorLabelCurrentColor: '#000000',
+    stepIndicatorLabelFinishedColor: '#ffffff',
+    stepIndicatorLabelUnFinishedColor: 'rgba(255,255,255,0.5)',
+    labelColor: '#666666',
+    labelSize: 15,
+    currentStepLabelColor: '#fe7013',
+  };
