@@ -9,13 +9,13 @@ import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
 export default function ListOrders(props) {
-    const { orders, loading, navigation } = props;
+    const { orders, loading, navigation, userType } = props;
     return (
         <View>
             {size(orders) > 0 ? (
                 <FlatList 
                    data={orders}
-                   renderItem={(item) => <OrderRender item={item} navigation={navigation} />}
+                   renderItem={(item) => <OrderRender item={item} navigation={navigation} userType={userType} />}
                    keyExtractor={(item, index) => index.toString()}
                    ListFooterComponent={<BusinessFooterList loading={loading} />}
                 />
@@ -48,16 +48,21 @@ function BusinessFooterList(props) {
 }
 
 function OrderRender(props) {
-    const { item, navigation } = props;
+    const { item, navigation, userType } = props;
     const { images, productName, productPrice, productDescription, id, status } = item.item;
     const imageItem = images[0];
     const estado = status == "Open" ? "En proceso de aprobacion" : 
                     status == "processing" ? "Aprobado" :
                     status == "Paid" ? "Enviando" :
-                    status == "Received" ? "Revibido"  : "";
+                    status == "Received" ? "Recibido"  : "";
 
   const ecommerceInfo = () => {
-        navigation.navigate("CompleteOrderEcommerce", { product : item.item })
+      if(userType == "User") {
+            navigation.navigate("CompleteOrderEcommerce", { product : item.item })
+      } else {
+        navigation.navigate("GestionPedidosMiPyme", { product : item.item })
+      }
+        
   }
 
   return(

@@ -11,7 +11,7 @@ const db = firebase.firestore(firebaseApp);
 
 export default function RenderPage(props) {
     const { titlePage, product,shoopingCart, currentPage, setIsLoading, setReload, setCurrentPage } = props;
-    const { cartId, productId, productName, images, productPrice, OrderId, quantity, toastRefCart, status } = product;
+    const { cartId, productId, productName, images, productPrice, OrderId, toastRefCart, status } = product;
     const [PaymentId, setPeymentId] = useState("");
     const [showModal, setShowModal] = useState(false);
 
@@ -43,7 +43,7 @@ export default function RenderPage(props) {
                         {
                             "amount": {
                                 "currency_code": "USD",
-                                "value": "630.00"
+                                "value": `${(productPrice * shoopingCart.quantity) / 24.33}`
                             }
                         }
                     ]

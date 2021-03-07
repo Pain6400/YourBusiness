@@ -4,8 +4,9 @@ import Account from "../screeens/Account/Account";
 import Register from "../screeens/Account/Register";
 import { Header, Icon } from "react-native-elements";
 import OrdersToProcess from "../screeens/Order/OrdersToProcessFinalUser";
-import OrderProcesing from "../screeens/Order/OrderProcesingNotification";
-import CompleteOrderEcommerce from "../screeens/Order/CompleteOrderEcommerce";
+import OrderProcesing from "../screeens/Order/OrdersToProcessMyPyme";
+import CompleteOrderEcommerce from "../screeens/Order/StepNotification";
+import GestionPedidosMiPyme from "../Components/Order/GestionPedidosMiPyme";
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,11 @@ export default function AccountStack() {
                 name="CompleteOrderEcommerce"
                 component={CompleteOrderEcommerce}
                 options={{ title: "Estado del pedido" }}
+            />
+            <Stack.Screen
+                name="GestionPedidosMiPyme"
+                component={GestionPedidosMiPyme}
+                options={{ title: "Gestionar Pedidos" }}
             />
         </Stack.Navigator>
     );

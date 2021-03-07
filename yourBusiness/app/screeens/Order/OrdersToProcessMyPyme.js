@@ -12,9 +12,10 @@ const db = firebase.firestore(firebaseApp);
 
 export default function OrderProcesing(props) {
     const { navigation } = props;
-    const { id } = props.route.params;
+    const { id, userType } = props.route.params;
     const [loading, setIsLoading] = useState(false);
     const [orders, setOrders] = useState([]);
+
     const fireSQL = new FireSQL(firebase.firestore(), { includeId: "id" });
     useFocusEffect(
         React.useCallback(() => {
@@ -63,6 +64,7 @@ export default function OrderProcesing(props) {
                 orders={orders}
                 loading={loading}
                 navigation={navigation}
+                userType="MiPyme"
             />
         </View>
     )

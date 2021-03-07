@@ -18,14 +18,14 @@ export default function CompleteOrderEcommerce(props) {
 
     const [shoopingCart, setShoppingCart] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(4);
     const [titlePage, setTitlePage] = useState("");
     const [reload, setReload] = useState(false);
 
     useEffect(() => {
         
         if (status === "Open") {
-            setCurrentPage(1);
+            setCurrentPage(0);
             setTitlePage("En proceso de aprobacion")
         } else if (status === "processing") {
             setCurrentPage(1);

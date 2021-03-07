@@ -7,7 +7,7 @@ import { firebaseApp } from "../../Utils/firebase";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 import ListOrders from "../../Components/Order/ListOrdersNotification";
-import ListEcommerceOrder from "../../Components/Order/ListEcommerceOrder";
+import ListEcommerceOrder from "../../Components/Order/ListEcommerceOrderMiPyme";
 
 const db = firebase.firestore(firebaseApp);
 
@@ -101,6 +101,7 @@ export default function OrdersToProcess(props)
                                 orders={orders}
                                 loading={loading}
                                 navigation={navigation}
+                                userType="User"
                             />
                         </> : 
 
