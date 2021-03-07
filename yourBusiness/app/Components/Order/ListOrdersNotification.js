@@ -10,7 +10,6 @@ const db = firebase.firestore(firebaseApp);
 
 export default function ListOrders(props) {
     const { orders, loading, navigation } = props;
-
     return (
         <View>
             {size(orders) > 0 ? (
@@ -52,7 +51,6 @@ function OrderRender(props) {
     const { item, navigation } = props;
     const { images, productName, productPrice, productDescription, id, status } = item.item;
     const imageItem = images[0];
-    
     const estado = status == "Open" ? "En proceso de aprobacion" : 
                     status == "processing" ? "Aprobado" :
                     status == "Paid" ? "Enviando" :

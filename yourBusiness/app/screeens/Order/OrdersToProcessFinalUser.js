@@ -6,7 +6,7 @@ import { Icon, Button } from 'react-native-elements'
 import { firebaseApp } from "../../Utils/firebase";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
-import ListOrders from "../../Components/Order/ListOrders";
+import ListOrders from "../../Components/Order/ListOrdersNotification";
 import ListEcommerceOrder from "../../Components/Order/ListEcommerceOrder";
 
 const db = firebase.firestore(firebaseApp);

@@ -6,7 +6,7 @@ import { Icon, Button } from 'react-native-elements'
 import { firebaseApp } from "../../Utils/firebase";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
-import ListOrders from "../../Components/Order/ListOrders";
+import ListOrders from "../../Components/Order/ListOrdersNotification";
 
 const db = firebase.firestore(firebaseApp);
 
@@ -16,7 +16,6 @@ export default function OrderProcesing(props) {
     const [loading, setIsLoading] = useState(false);
     const [orders, setOrders] = useState([]);
     const fireSQL = new FireSQL(firebase.firestore(), { includeId: "id" });
-
     useFocusEffect(
         React.useCallback(() => {
 

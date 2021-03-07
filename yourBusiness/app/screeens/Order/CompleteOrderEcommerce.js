@@ -18,10 +18,12 @@ export default function CompleteOrderEcommerce(props) {
 
     const [shoopingCart, setShoppingCart] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(10);
     const [titlePage, setTitlePage] = useState("");
+    const [reload, setReload] = useState(false);
 
     useEffect(() => {
+        
         if (status === "Open") {
             setCurrentPage(1);
             setTitlePage("En proceso de aprobacion")
@@ -31,7 +33,7 @@ export default function CompleteOrderEcommerce(props) {
         } else if (status === "Paid") {
             setCurrentPage(2);
             setTitlePage("Enviando")
-        } else if (status === "received") {
+        } else if (status === "Received") {
             setCurrentPage(3)
             setTitlePage("Recibido")
         }
@@ -43,7 +45,9 @@ export default function CompleteOrderEcommerce(props) {
                 const data = response.data();
                 setShoppingCart(data)
             })
-    }, [])
+
+            setReload(false);
+    }, [reload])
 
     return (
         <View style={styles.container}>
@@ -62,7 +66,12 @@ export default function CompleteOrderEcommerce(props) {
                 product={product} 
                 shoopingCart={shoopingCart} 
                 currentPage={currentPage}
+                setIsLoading={setIsLoading}
+                setReload={setReload}
+                setCurrentPage={setCurrentPage}
             />
+
+        <Loading text="Cargando" isVisible={isLoading} />
         </View>
     );
     
