@@ -6,6 +6,7 @@ import { Header, Icon } from "react-native-elements";
 import OrdersToProcess from "../screeens/Order/OrdersToProcessFinalUser";
 import OrderProcesing from "../screeens/Order/OrdersToProcessMyPyme";
 import CompleteOrderEcommerce from "../screeens/Order/StepNotification";
+import GestionPedidosMiPyme from "../Components/Order/GestionPedidosMiPyme";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,12 @@ export default function ShoppingCardStack() {
                 name="CompleteOrderEcommerce"
                 component={CompleteOrderEcommerce}
                 options={{ title: "Estado del pedido" }}
+            />
+
+            <Stack.Screen
+                name="GestionPedidosMiPyme"
+                component={GestionPedidosMiPyme}
+                options={{ title: "Gestionar Pedidos" }}
             />
         </Stack.Navigator>
     );
