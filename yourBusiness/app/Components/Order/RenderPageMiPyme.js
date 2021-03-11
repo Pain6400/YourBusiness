@@ -11,6 +11,7 @@ export default function RenderPage(props) {
     const { titlePage, product,shoopingCart, currentPage, setIsLoading, setReload, setCurrentPage } = props;
     const { cartId, productId, productName, images, productPrice, OrderId} = product;
 
+    console.log(shoopingCart)
     const OrderFinish = () => {
         setIsLoading(true)
         db.collection("Orders").doc(OrderId).update({

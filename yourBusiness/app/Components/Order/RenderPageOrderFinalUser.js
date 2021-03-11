@@ -15,6 +15,7 @@ export default function RenderPage(props) {
     const [PaymentId, setPeymentId] = useState("");
     const [showModal, setShowModal] = useState(false);
 
+    console.log(shoopingCart)
     const PaypalPeyment = ()  => {
         setIsLoading(true);
 
@@ -31,6 +32,8 @@ export default function RenderPage(props) {
         }).then((response) => response.json())
         .then((response) => { 
             const token = response.access_token;
+            console.log(token);
+            const value = parseFloat(((productPrice * shoopingCart.quantity) / 24.33)).toFixed(2);
             fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
                 method: 'POST',
                 headers: {
@@ -43,7 +46,7 @@ export default function RenderPage(props) {
                         {
                             "amount": {
                                 "currency_code": "USD",
-                                "value": `${(productPrice * shoopingCart.quantity) / 24.33}`
+                                "value": `${value}`
                             }
                         }
                     ]
@@ -51,6 +54,7 @@ export default function RenderPage(props) {
                   })
             }).then((responseOrder) => responseOrder.json())
             .then((response) => { 
+                console.log(response)
                 setPeymentId(response.id)
                 setIsLoading(false)
                 setShowModal(true)
