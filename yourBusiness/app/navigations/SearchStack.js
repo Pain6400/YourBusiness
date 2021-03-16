@@ -6,6 +6,7 @@ import OrdersToProcess from "../screeens/Order/OrdersToProcessFinalUser";
 import OrderProcesing from "../screeens/Order/OrdersToProcessMyPyme";
 import CompleteOrderEcommerce from "../screeens/Order/StepNotification";
 import GestionPedidosMiPyme from "../Components/Order/GestionPedidosMiPyme";
+import UserInfo from "../Components/Order/UserInfo";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,12 @@ export default function SearchStack() {
                 name="GestionPedidosMiPyme"
                 component={GestionPedidosMiPyme}
                 options={{ title: "Gestionar Pedidos" }}
+            />
+
+            <Stack.Screen
+                name="UserInfo"
+                component={UserInfo}
+                options={{ title: "Informacion del cliente" }}
             />
         </Stack.Navigator>
     );

@@ -19,8 +19,8 @@ export default function RenderPage(props) {
     const PaypalPeyment = ()  => {
         setIsLoading(true);
 
-        const key = 'Aa74kr26YwCHZKWWoRDcKU7CfDargDfgbvuQ3sA8NgD4vjZT-UM4St8GnyupuNg205PzEJHP5fC-reBW';
-        const secret = 'EEzK8A6Co9XwGu0THMc4aOxqjlBnHe4ONtjJPz_7lyTM3e56_TdJD-rbM-T1fJ0ibOf3TfuyyxHHKWxA';
+        const key = 'AQWEorhPAoF_FhtRExP4eT75S2nFwZaYTw2Oco1MVY87ObJ-oAbchFnl9lTSYki0DDX09vPcg4Gg-RrB';
+        const secret = 'EFbfi-all4GNocoSgqcH-zVIGEu7gmwEsMWIH8XSO19GuijI3jV0MxjrdihywYduhRsclqAtDWQFmk3q';
 
         fetch("https://api-m.sandbox.paypal.com/v1/oauth2/token", {
             method: 'POST',
@@ -32,7 +32,6 @@ export default function RenderPage(props) {
         }).then((response) => response.json())
         .then((response) => { 
             const token = response.access_token;
-            console.log(token);
             const value = parseFloat(((productPrice * shoopingCart.quantity) / 24.33)).toFixed(2);
             fetch("https://api-m.sandbox.paypal.com/v2/checkout/orders", {
                 method: 'POST',

@@ -63,6 +63,7 @@ export default function CompleteOrderEcommerce(props) {
 
             <RenderPage 
                 titlePage={titlePage} 
+                navigation={navigation}
                 product={product} 
                 shoopingCart={shoopingCart} 
                 currentPage={currentPage}
@@ -86,6 +87,10 @@ const styles = StyleSheet.create({
     stepIndicator: {
       marginVertical: 10,
       paddingHorizontal: 20,
+    },
+    btn: {
+        backgroundColor: "#00a680",
+        margin: 20
     },
   });
 

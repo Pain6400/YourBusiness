@@ -8,10 +8,9 @@ import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
 export default function RenderPage(props) {
-    const { titlePage, product,shoopingCart, currentPage, setIsLoading, setReload, setCurrentPage } = props;
-    const { cartId, productId, productName, images, productPrice, OrderId} = product;
+    const { titlePage, product,shoopingCart, currentPage, setIsLoading, setCurrentPage, navigation } = props;
+    const { userOrderId, productName, images, productPrice, OrderId} = product;
 
-    console.log(shoopingCart)
     const OrderFinish = () => {
         setIsLoading(true)
         db.collection("Orders").doc(OrderId).update({
@@ -22,10 +21,26 @@ export default function RenderPage(props) {
         })
     }
 
+    const infoCliente = () => {
+        db.collection("Address")
+            .doc(userOrderId)
+            .get()
+            .then((response) => {
+                const user = response.data();
+                navigation.navigate("UserInfo", user)
+            })
+    }
 
     if(currentPage == 0) {
         return (
             <View style={styles.rowItem}>
+                <View style={{ flexDirection: "row" }}>
+                    <Button
+                        title="Ver informacion del cliente"
+                        onPress={infoCliente}
+                        buttonStyle={styles.btn}
+                    />
+                </View>
               <Text style={styles.title}>{titlePage}</Text>
                   <Image
                       resizeMode="cover"
@@ -61,6 +76,13 @@ export default function RenderPage(props) {
     } else if(currentPage == 1) {
         return (
             <View style={styles.rowItem}>
+                <View style={{ flexDirection: "row" }}>
+                    <Button
+                        title="Ver informacion del cliente"
+                        onPress={infoCliente}
+                        buttonStyle={styles.btn}
+                    />
+                </View>
               <Text style={styles.title}>{titlePage}</Text>
                   <Image
                       resizeMode="cover"
@@ -90,6 +112,13 @@ export default function RenderPage(props) {
     } else if(currentPage == 2) {
         return (
             <View style={styles.rowItem}>
+                <View style={{ flexDirection: "row" }}>
+                    <Button
+                        title="Ver informacion del cliente"
+                        onPress={infoCliente}
+                        buttonStyle={styles.btn}
+                    />
+                </View>
               <Text style={styles.title}>{titlePage}</Text>
                   <Image
                       resizeMode="cover"
@@ -119,6 +148,13 @@ export default function RenderPage(props) {
     } else if (currentPage == 3) {
         return(
             <View style={styles.rowItem}>
+                <View style={{ flexDirection: "row" }}>
+                    <Button
+                        title="Ver informacion del cliente"
+                        onPress={infoCliente}
+                        buttonStyle={styles.btn}
+                    />
+                </View>
               <Text style={styles.title}>{titlePage}</Text>
               <Image
                       resizeMode="cover"
